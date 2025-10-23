@@ -1,0 +1,766 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BRS1 - Banco de Horas Social</title>
+    <!-- Carga de Tailwind CSS para estilos rápidos y responsivos -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Carga de la biblioteca Lucide Icons para los iconos de la interfaz -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        /* Configuración de Tailwind para usar el color de acento */
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        // Tonalidades amigables pero oscuras
+                        'brs-bg-dark': '#1e2022', /* Fondo principal similar a modo oscuro */
+                        'brs-card': '#272b30',   /* Fondo de tarjetas y elementos */
+                        'brs-accent': '#3b82f6', /* Azul vibrante para acentos (Botón Ayudar) */
+                        'brs-text': '#e5e7eb',   /* Texto claro */
+                        'brs-pending': '#f97316', /* Naranja para tareas no aceptadas */
+                        'brs-accepted': '#10b981', /* Verde para tareas aceptadas */
+                    },
+                }
+            }
+        }
+        /* Estilos generales para el cuerpo y asegurar el formato vertical de la app */
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #1e2022;
+            color: #e5e7eb;
+            display: flex;
+            justify-content: center;
+            min-height: 100vh;
+        }
+        /* Contenedor principal para simular la pantalla de un móvil */
+        #app-container {
+            width: 100%;
+            max-width: 420px; /* Ancho típico de un móvil */
+            background-color: #1e2022;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+            display: flex;
+            flex-direction: column;
+            padding-bottom: 64px; /* Espacio para la barra de navegación fija */
+        }
+        /* Estilo para la barra de navegación inferior flotante */
+        #bottom-nav {
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+            max-width: 420px;
+            background-color: #272b30;
+            border-top: 1px solid #374151;
+            z-index: 10;
+        }
+
+        /* Estilo para centrar correctamente el icono y el texto en la nav bar */
+        .nav-btn {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 8px 4px;
+            flex-grow: 1; /* Permite que los botones ocupen el espacio equitativamente */
+        }
+
+        /* Ocultar divs de menú por defecto */
+        .menu-page {
+            display: none;
+            padding: 16px;
+            flex-grow: 1;
+            overflow-y: auto; /* Scroll dentro del contenido */
+            /* Se necesita flex-col para apilar elementos */
+            display: flex; 
+            flex-direction: column; 
+            align-items: center; /* Centrado horizontal para el contenido del menú */
+            text-align: center;
+        }
+        /* El home debe alinearse a la izquierda */
+        #home-menu {
+            align-items: flex-start;
+            text-align: left;
+        }
+        
+        /* Estilos para el campo de entrada de perfil (modal de edición) */
+        .profile-input {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 12px;
+            border-radius: 8px;
+            border: 1px solid #374151;
+            background-color: #1e2022;
+            color: #e5e7eb;
+        }
+        /* Estilo para la foto de perfil en el feed */
+        .post-profile-pic {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            object-fit: cover;
+            cursor: pointer;
+        }
+        /* Estilo para los botones de las secciones del perfil */
+        .profile-section-button {
+            flex-grow: 1;
+            padding: 10px 0;
+            text-align: center;
+            border-bottom: 2px solid transparent;
+            cursor: pointer;
+            transition: border-bottom-color 0.2s;
+        }
+        .profile-section-button.active {
+            border-bottom-color: #3b82f6;
+            font-weight: 600;
+        }
+
+    </style>
+</head>
+<body>
+
+    <div id="app-container">
+
+        <!-- Nombre de la App en la cabecera (se cambiará fácilmente) -->
+        <header class="p-4 bg-brs-card border-b border-gray-700 sticky top-0 z-5">
+            <h1 class="text-xl font-bold text-center" id="app-name">BRS1</h1>
+        </header>
+
+        <!-- 1. Menú Principal (Ayuda a alguien ahora mismo) -->
+        <div id="home-menu" class="menu-page flex flex-col">
+            <h2 class="text-2xl font-semibold mb-6 text-brs-text w-full">Ayuda a alguien ahora mismo</h2>
+
+            <!-- Lista de Solicitudes de Ayuda (Jobs) -->
+            <div id="requests-list" class="space-y-4 w-full">
+                <!-- Tarjeta de Solicitud Ejemplo 1: Manuel -->
+                <div class="p-4 bg-brs-card rounded-xl shadow-lg border border-gray-700">
+                    <div class="flex items-center justify-between mb-3">
+                        <div class="flex items-center space-x-3">
+                            <img src="https://placehold.co/40x40/f43f5e/ffffff?text=M" alt="Foto de Manuel" class="post-profile-pic" data-user-id="manuel">
+                            <h3 class="text-lg font-semibold text-brs-text">Ayuda a Manuel con la compra</h3>
+                        </div>
+                        <span class="text-sm text-gray-400">Hace 1h</span>
+                    </div>
+
+                    <p class="text-gray-300 mb-3 text-sm">Necesito a alguien que me acompañe a hacer la compra semanal, especialmente a cargar las bolsas pesadas y ayudarme a organizarla en casa.</p>
+
+                    <div class="text-xs text-gray-400 space-y-1 mb-4 border-l-2 border-brs-accent pl-3">
+                        <p class="flex items-center"><i data-lucide="clock" class="w-4 h-4 mr-2"></i>Día y Hora: Miércoles, 10:00 - 12:00</p>
+                        <p class="flex items-center"><i data-lucide="map-pin" class="w-4 h-4 mr-2"></i>Ubicación: Madrid, Barrio de Salamanca</p>
+                    </div>
+
+                    <button onclick="acceptTask('manuel_purchase')" class="w-full bg-brs-accent hover:bg-blue-600 text-white font-bold py-2 rounded-lg transition duration-200 shadow-md shadow-blue-900">
+                        <i data-lucide="hand-heart" class="w-5 h-5 inline-block mr-2"></i>Ayudar
+                    </button>
+                </div>
+
+                <!-- Tarjeta de Solicitud Ejemplo 2: Maribel -->
+                <div class="p-4 bg-brs-card rounded-xl shadow-lg border border-gray-700">
+                    <div class="flex items-center justify-between mb-3">
+                        <div class="flex items-center space-x-3">
+                            <img src="https://placehold.co/40x40/8b5cf6/ffffff?text=MR" alt="Foto de Maribel" class="post-profile-pic" data-user-id="maribel">
+                            <h3 class="text-lg font-semibold text-brs-text">Acompañar a Maribel a pasear</h3>
+                        </div>
+                        <span class="text-sm text-gray-400">Hace 3h</span>
+                    </div>
+
+                    <p class="text-gray-300 mb-3 text-sm">Busco a alguien para acompañarme a dar un paseo diario por el parque, charlar un rato y hacer algo de ejercicio suave. Es muy importante la puntualidad.</p>
+
+                    <div class="text-xs text-gray-400 space-y-1 mb-4 border-l-2 border-brs-accent pl-3">
+                        <p class="flex items-center"><i data-lucide="clock" class="w-4 h-4 mr-2"></i>Día y Hora: Lunes, Jueves y Viernes, 17:00 - 18:30</p>
+                        <p class="flex items-center"><i data-lucide="map-pin" class="w-4 h-4 mr-2"></i>Ubicación: Sevilla, Triana</p>
+                    </div>
+
+                    <button onclick="acceptTask('maribel_walk')" class="w-full bg-brs-accent hover:bg-blue-600 text-white font-bold py-2 rounded-lg transition duration-200 shadow-md shadow-blue-900">
+                        <i data-lucide="hand-heart" class="w-5 h-5 inline-block mr-2"></i>Ayudar
+                    </button>
+                </div>
+
+                <!-- Tarjeta de Solicitud Ejemplo 3: Laura -->
+                <div class="p-4 bg-brs-card rounded-xl shadow-lg border border-gray-700">
+                    <div class="flex items-center justify-between mb-3">
+                        <div class="flex items-center space-x-3">
+                            <img src="https://placehold.co/40x40/0ea5e9/ffffff?text=L" alt="Foto de Laura" class="post-profile-pic" data-user-id="laura">
+                            <h3 class="text-lg font-semibold text-brs-text">Soporte con trámites online</h3>
+                        </div>
+                        <span class="text-sm text-gray-400">Ayer</span>
+                    </div>
+
+                    <p class="text-gray-300 mb-3 text-sm">Necesito ayuda para rellenar unos formularios online del ayuntamiento. Necesito a alguien que sea paciente con la tecnología.</p>
+
+                    <div class="text-xs text-gray-400 space-y-1 mb-4 border-l-2 border-brs-accent pl-3">
+                        <p class="flex items-center"><i data-lucide="clock" class="w-4 h-4 mr-2"></i>Día y Hora: Martes, 11:00 - 13:00</p>
+                        <p class="flex items-center"><i data-lucide="map-pin" class="w-4 h-4 mr-2"></i>Ubicación: Valencia, El Carmen</p>
+                    </div>
+
+                    <button onclick="acceptTask('laura_online')" class="w-full bg-brs-accent hover:bg-blue-600 text-white font-bold py-2 rounded-lg transition duration-200 shadow-md shadow-blue-900">
+                        <i data-lucide="hand-heart" class="w-5 h-5 inline-block mr-2"></i>Ayudar
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- 2. Menú de Solicitud de Ayuda (AJUSTE: Centrado Vertical y Horizontal Correcto) -->
+        <div id="request-menu" class="menu-page">
+            <!-- Título arriba y centrado -->
+            <h2 class="text-2xl font-semibold mb-6 text-brs-text w-full text-center">Solicitar Ayuda (¡Necesito un ayudante!)</h2>
+
+            <!-- Formulario debajo, con ancho máximo y alineación centrada para el contenedor principal -->
+            <form id="new-request-form" class="space-y-4 p-4 bg-brs-card rounded-xl shadow-lg border border-gray-700 w-full max-w-sm text-left">
+                <div class="flex flex-col">
+                    <label for="request-title" class="mb-1 text-sm font-medium text-gray-300">Título de la Tarea</label>
+                    <input type="text" id="request-title" class="profile-input" placeholder="Ej: Acompañar a mi madre al médico">
+                </div>
+
+                <div class="flex flex-col">
+                    <label for="request-description" class="mb-1 text-sm font-medium text-gray-300">Descripción de la Tarea</label>
+                    <textarea id="request-description" class="profile-input h-24 resize-none" placeholder="Detalla qué tipo de ayuda necesitas..."></textarea>
+                </div>
+
+                <div class="flex flex-col">
+                    <label for="request-time" class="mb-1 text-sm font-medium text-gray-300">Hora y Día</label>
+                    <input type="text" id="request-time" class="profile-input" placeholder="Ej: Mañana a las 9:30h">
+                </div>
+
+                <div class="flex flex-col">
+                    <label for="request-location" class="mb-1 text-sm font-medium text-gray-300">Ubicación (Localidad y Barrio)</label>
+                    <input type="text" id="request-location" class="profile-input" placeholder="Ej: Barcelona, Eixample">
+                </div>
+
+                <button type="button" onclick="submitRequest()" class="w-full bg-brs-accepted hover:bg-green-600 text-white font-bold py-3 rounded-lg transition duration-200 shadow-md shadow-green-900">
+                    <i data-lucide="send" class="w-5 h-5 inline-block mr-2"></i> Publicar Solicitud
+                </button>
+
+                <div id="request-message" class="mt-4 text-center text-brs-text hidden"></div>
+            </form>
+        </div>
+
+        <!-- 3. Menú de Perfil (Propio o Ajeno) -->
+        <div id="profile-menu" class="menu-page">
+            <!-- El contenido del perfil se renderizará aquí con JavaScript -->
+            <div id="profile-content" class="flex flex-col h-full w-full max-w-sm">
+                <!-- Se inyectará el contenido del perfil (mi perfil o perfil de otro) -->
+            </div>
+        </div>
+
+        <!-- Barra de Navegación Inferior Flotante -->
+        <nav id="bottom-nav" class="flex justify-around items-center h-16">
+            <!-- Los botones ya están centrados vertical y horizontalmente gracias a .nav-btn en CSS -->
+            <button onclick="showMenu('home-menu')" class="nav-btn transition duration-150 hover:bg-brs-card" data-menu="home-menu">
+                <i data-lucide="home" class="w-6 h-6 text-gray-400"></i>
+                <span class="text-xs block">Inicio</span>
+            </button>
+            <button onclick="showMenu('request-menu')" class="nav-btn transition duration-150 hover:bg-brs-card" data-menu="request-menu">
+                <i data-lucide="plus-circle" class="w-6 h-6 text-gray-400"></i>
+                <span class="text-xs block">Solicitar</span>
+            </button>
+            <button onclick="showMenu('profile-menu', 'my_user')" class="nav-btn transition duration-150 hover:bg-brs-card" data-menu="profile-menu">
+                <i data-lucide="user" class="w-6 h-6 text-gray-400"></i>
+                <span class="text-xs block">Perfil</span>
+            </button>
+        </nav>
+
+        <!-- MODAL para Edición de Perfil (oculto por defecto) -->
+        <div id="edit-profile-modal" class="fixed inset-0 bg-black bg-opacity-70 z-50 hidden items-center justify-center p-4">
+            <div class="bg-brs-card p-6 rounded-xl w-full max-w-sm shadow-2xl border border-gray-700">
+                <h3 class="text-xl font-bold mb-4 text-brs-text">Editar Perfil</h3>
+                <form id="edit-profile-form" class="space-y-4">
+                    <label class="block">
+                        <span class="text-sm font-medium text-gray-300">Nombre Completo</span>
+                        <input type="text" id="edit-name" class="profile-input" required>
+                    </label>
+                    <label class="block">
+                        <span class="text-sm font-medium text-gray-300">Nombre de Usuario</span>
+                        <input type="text" id="edit-username" class="profile-input" required>
+                    </label>
+                    <label class="block">
+                        <span class="text-sm font-medium text-gray-300">Edad</span>
+                        <input type="number" id="edit-age" class="profile-input" min="18" max="100" required>
+                    </label>
+                    <div class="flex justify-end space-x-3 mt-6">
+                        <button type="button" onclick="closeEditModal()" class="px-4 py-2 text-sm font-medium text-gray-300 rounded-lg hover:bg-gray-700 transition duration-150">
+                            Cancelar
+                        </button>
+                        <button type="submit" class="px-4 py-2 text-sm font-medium bg-brs-accent text-white rounded-lg hover:bg-blue-600 transition duration-150">
+                            Guardar Cambios
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- MODAL para Mensajes de Confirmación/Alerta (oculto por defecto) -->
+        <div id="message-modal" class="fixed inset-0 bg-black bg-opacity-70 z-50 hidden items-center justify-center p-4">
+            <div class="bg-brs-card p-6 rounded-xl w-full max-w-xs shadow-2xl border border-gray-700 text-center">
+                <h3 id="modal-title" class="text-xl font-bold mb-4 text-brs-text"></h3>
+                <p id="modal-body" class="mb-6 text-gray-300"></p>
+                <button onclick="closeMessageModal()" class="px-6 py-2 text-sm font-medium bg-brs-accent text-white rounded-lg hover:bg-blue-600 transition duration-150">
+                    Entendido
+                </button>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        // --- 1. CONFIGURACIÓN GLOBAL Y DATOS DE LA APP ---
+
+        // Nombre de la aplicación como variable para fácil reemplazo (IMPORTANTE)
+        const APP_NAME = "BRS1";
+
+        // Usuario actual (simulado)
+        let currentUser = {
+            id: 'my_user',
+            name: 'Elena Torres',
+            username: 'elena_help',
+            age: 28,
+            profilePic: 'https://placehold.co/100x100/10b981/ffffff?text=E',
+            // Datos propios del perfil
+            hoursGained: 4,
+            tasksCompleted: 2,
+        };
+
+        // Base de datos simulada de perfiles
+        const userDB = {
+            'my_user': currentUser, // El perfil propio
+            'manuel': {
+                id: 'manuel',
+                name: 'Manuel Soria',
+                username: 'manusoria',
+                age: 75,
+                profilePic: 'https://placehold.co/100x100/f43f5e/ffffff?text=M',
+                tasksCompleted: 8,
+                tasksRequested: 15,
+                reviews: [
+                    { reviewer: 'elena_help', text: 'Manuel es muy amable y agradecido. Me ofreció un café después de ayudarle.', rating: 5 },
+                    { reviewer: 'carmen_p', text: 'Solicitud bien descrita y con horarios claros.', rating: 4 },
+                ]
+            },
+            'maribel': {
+                id: 'maribel',
+                name: 'Maribel Rivas',
+                username: 'mari_paseos',
+                age: 68,
+                profilePic: 'https://placehold.co/100x100/8b5cf6/ffffff?text=MR',
+                tasksCompleted: 12,
+                tasksRequested: 10,
+                reviews: [
+                    { reviewer: 'juan_ayudante', text: 'Paseo muy agradable. Una persona con mucha conversación.', rating: 5 },
+                    { reviewer: 'pepe_80', text: 'Nos retrasamos un poco, pero todo genial.', rating: 4 },
+                    { reviewer: 'luisa_help', text: '¡Muy puntual y educada!', rating: 5 },
+                ]
+            },
+            'laura': {
+                id: 'laura',
+                name: 'Laura Cortés',
+                username: 'laura_c',
+                age: 40,
+                profilePic: 'https://placehold.co/100x100/0ea5e9/ffffff?text=L',
+                tasksCompleted: 1,
+                tasksRequested: 2,
+                reviews: []
+            },
+        };
+
+        // Base de datos simulada de tareas propias
+        let myTasks = {
+            pending: [ // Tareas a las que el usuario se ha apuntado para ayudar
+                { id: 'pending_1', title: 'Ayuda a Manuel con la compra', status: 'PENDIENTE', date: 'Miércoles, 10:00 - 12:00', requesterId: 'manuel' },
+            ],
+            requested: [ // Tareas que el usuario ha solicitado
+                // Tarea NO aceptada (Naranja)
+                { id: 'req_1', title: 'Ayuda con clases de informática', description: 'Necesito una hora de ayuda para aprender a usar un programa.', time: 'Lunes, 16:00', location: 'Barcelona, Poblenou', accepted: false, helperId: null },
+                // Tarea Aceptada (Verde)
+                { id: 'req_2', title: 'Mover unos muebles pesados', description: 'Necesito a dos personas para mover un sofá y una mesa en mi casa.', time: 'Sábado, 11:00', location: 'Madrid, Chamberí', accepted: true, helperId: 'juan_ayudante' },
+            ]
+        };
+
+        // Estado de la interfaz
+        let currentUserId = currentUser.id;
+        let currentProfileViewId = currentUser.id;
+        let currentProfileSection = 'reviews'; // Sección activa en el perfil
+
+
+        // --- 2. FUNCIONES DE NAVEGACIÓN Y VISUALIZACIÓN ---
+
+        /**
+         * Muestra el menú seleccionado y oculta los demás.
+         * @param {string} menuId - ID del menú a mostrar ('home-menu', 'request-menu', 'profile-menu').
+         * @param {string} [viewUserId] - ID del usuario a mostrar si es 'profile-menu'.
+         */
+        function showMenu(menuId, viewUserId = currentUser.id) {
+            document.querySelectorAll('.menu-page').forEach(menu => {
+                // Si el menú tiene el estilo 'flex', al ocultarlo debe ser 'none'
+                menu.style.display = 'none';
+            });
+            // Al mostrarlo, debe ser 'flex' ya que tiene flex-direction: column y alineaciones necesarias
+            document.getElementById(menuId).style.display = 'flex'; 
+            document.getElementById('app-name').textContent = (menuId === 'home-menu') ? APP_NAME : (menuId === 'request-menu' ? 'Solicitar Ayuda' : 'Perfil');
+
+            // Actualizar el estado de la barra de navegación
+            document.querySelectorAll('.nav-btn i').forEach(icon => {
+                icon.classList.remove('text-brs-accent');
+                icon.classList.add('text-gray-400');
+            });
+            document.querySelector(`.nav-btn[data-menu="${menuId}"] i`)?.classList.replace('text-gray-400', 'text-brs-accent');
+
+
+            // Lógica específica para el menú de perfil
+            if (menuId === 'profile-menu') {
+                currentProfileViewId = viewUserId;
+                renderProfile(viewUserId);
+            }
+
+            // Ocultar modal si está abierto al cambiar de menú
+            closeEditModal();
+        }
+
+        /**
+         * Renderiza el contenido del perfil (propio o ajeno)
+         * @param {string} userId - ID del usuario a mostrar.
+         */
+        function renderProfile(userId) {
+            const profileData = userDB[userId] || userDB['my_user']; // Fallback
+            const isMyProfile = userId === currentUser.id;
+            const profileContent = document.getElementById('profile-content');
+            profileContent.innerHTML = ''; // Limpiar contenido anterior
+
+            // --- Estructura Principal del Perfil ---
+            let html = `
+                <div class="flex flex-col items-center p-4 bg-brs-card rounded-b-xl border-b border-gray-700 w-full">
+                    <img src="${profileData.profilePic}" alt="Foto de Perfil" class="w-24 h-24 rounded-full object-cover border-4 border-brs-accent mb-3">
+                    <h3 class="text-xl font-bold text-brs-text">${profileData.name}</h3>
+                    <p class="text-sm text-gray-400">@${profileData.username} · ${profileData.age} años</p>
+                    ${isMyProfile ? `<p class="text-sm mt-2 text-brs-accepted font-semibold">Horas Ganadas: ${profileData.hoursGained}</p>` : ''}
+                    ${isMyProfile ? `
+                        <button onclick="openEditModal()" class="mt-4 w-full max-w-xs border border-gray-700 text-brs-text font-medium py-2 rounded-lg hover:bg-gray-700 transition duration-200">
+                            Editar Perfil
+                        </button>
+                    ` : ''}
+                </div>
+
+                <!-- Barra de Navegación de Secciones (Similar a Instagram) -->
+                <div class="flex justify-around text-gray-400 border-b border-gray-700 sticky top-[60px] bg-brs-card z-5 w-full">
+                    <button class="profile-section-button ${currentProfileSection === 'reviews' ? 'active' : ''}" onclick="changeProfileSection('reviews')">
+                        <i data-lucide="message-square" class="w-5 h-5 mx-auto"></i>
+                    </button>
+                    ${isMyProfile ? `
+                        <button class="profile-section-button ${currentProfileSection === 'pending' ? 'active' : ''}" onclick="changeProfileSection('pending')">
+                            <i data-lucide="clipboard-list" class="w-5 h-5 mx-auto"></i>
+                        </button>
+                        <button class="profile-section-button ${currentProfileSection === 'requested' ? 'active' : ''}" onclick="changeProfileSection('requested')">
+                            <i data-lucide="calendar-check" class="w-5 h-5 mx-auto"></i>
+                        </button>
+                    ` : ''}
+                </div>
+
+                <!-- Contenido de la Sección Activa -->
+                <div id="profile-section-content" class="p-4 flex-grow overflow-y-auto w-full">
+                    <!-- Contenido dinámico -->
+                </div>
+            `;
+            profileContent.innerHTML = html;
+            // Asegurarse de re-renderizar los iconos
+            lucide.createIcons();
+
+            // Renderizar la sección activa
+            renderProfileSectionContent(userId, currentProfileSection);
+        }
+
+        /**
+         * Cambia la sección activa dentro del perfil
+         * @param {string} section - La sección a mostrar ('reviews', 'pending', 'requested').
+         */
+        function changeProfileSection(section) {
+            currentProfileSection = section;
+            document.querySelectorAll('.profile-section-button').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            document.querySelector(`.profile-section-button[onclick*="'${section}'"]`)?.classList.add('active');
+
+            renderProfileSectionContent(currentProfileViewId, section);
+        }
+
+        /**
+         * Renderiza el contenido de la sección activa (Reseñas, Pendientes, Solicitadas)
+         * @param {string} userId - ID del usuario actual.
+         * @param {string} section - La sección a mostrar.
+         */
+        function renderProfileSectionContent(userId, section) {
+            const contentDiv = document.getElementById('profile-section-content');
+            const profileData = userDB[userId] || userDB['my_user']; // Fallback
+            let sectionHTML = '';
+
+            switch (section) {
+                case 'reviews':
+                    sectionHTML = `
+                        <h4 class="text-xl font-semibold mb-4 border-b border-gray-700 pb-2 text-left">Reseñas (${profileData.reviews?.length || 0})</h4>
+                        ${profileData.reviews && profileData.reviews.length > 0 ?
+                            profileData.reviews.map(review => `
+                                <div class="bg-brs-card p-3 rounded-lg mb-3 border border-gray-700 text-left">
+                                    <div class="flex items-center justify-between mb-1">
+                                        <p class="font-medium text-brs-accent">@${review.reviewer}</p>
+                                        <span class="text-yellow-400 flex items-center">
+                                            ${'★'.repeat(review.rating)}${'☆'.repeat(5 - review.rating)} (${review.rating}/5)
+                                        </span>
+                                    </div>
+                                    <p class="text-sm text-gray-300">${review.text}</p>
+                                </div>
+                            `).join('')
+                            : `<p class="text-gray-400 text-center py-8">Este usuario no tiene reseñas aún.</p>`
+                        }
+                    `;
+                    break;
+                case 'pending':
+                    // Tareas pendientes (Tareas a las que me he apuntado para ayudar) - Solo visible para el usuario propio
+                    if (userId === currentUser.id) {
+                        sectionHTML = `
+                            <h4 class="text-xl font-semibold mb-4 border-b border-gray-700 pb-2 text-left">Tareas Pendientes (${myTasks.pending.length})</h4>
+                            ${myTasks.pending.length > 0 ?
+                                myTasks.pending.map(task => `
+                                    <div class="bg-brs-card p-3 rounded-lg mb-3 border border-gray-700 text-left">
+                                        <p class="font-bold text-brs-accepted mb-1">${task.title}</p>
+                                        <p class="text-xs text-gray-400 mb-2">${task.date}</p>
+                                        <p class="text-sm text-gray-300">Ayudarás a: <span class="font-semibold text-brs-accent">${userDB[task.requesterId]?.name || task.requesterId}</span></p>
+                                    </div>
+                                `).join('')
+                                : `<p class="text-gray-400 text-center py-8">No tienes tareas pendientes de ayuda.</p>`
+                            }
+                        `;
+                    }
+                    break;
+                case 'requested':
+                    // Tareas Solicitadas (Tareas que he publicado) - Solo visible para el usuario propio
+                    if (userId === currentUser.id) {
+                        sectionHTML = `
+                            <h4 class="text-xl font-semibold mb-4 border-b border-gray-700 pb-2 text-left">Tareas Solicitadas (${myTasks.requested.length})</h4>
+
+                            <!-- Filtro de Tareas Solicitadas -->
+                            <div class="flex justify-start space-x-2 mb-4 w-full">
+                                <button id="filter-all" onclick="filterRequestedTasks('all')" class="text-sm px-3 py-1 rounded-full bg-brs-accent/20 text-brs-accent hover:bg-brs-accent hover:text-white transition duration-150">Todas</button>
+                                <button id="filter-accepted" onclick="filterRequestedTasks('accepted')" class="text-sm px-3 py-1 rounded-full bg-brs-accepted/20 text-brs-accepted hover:bg-brs-accepted hover:text-white transition duration-150">Aceptadas</button>
+                                <button id="filter-pending" onclick="filterRequestedTasks('pending')" class="text-sm px-3 py-1 rounded-full bg-brs-pending/20 text-brs-pending hover:bg-brs-pending hover:text-white transition duration-150">No Aceptadas</button>
+                            </div>
+
+                            <div id="requested-tasks-list" class="w-full">
+                                ${renderRequestedTasks('all')}
+                            </div>
+                        `;
+                    }
+                    break;
+                default:
+                    sectionHTML = `<p class="text-gray-400 text-center py-8">Contenido no disponible.</p>`;
+                    break;
+            }
+
+            contentDiv.innerHTML = sectionHTML;
+            lucide.createIcons(); // Re-renderizar iconos en el contenido dinámico
+        }
+
+        /**
+         * Renderiza la lista de tareas solicitadas con filtro.
+         * @param {string} filter - 'all', 'accepted', o 'pending'.
+         */
+        function renderRequestedTasks(filter) {
+            const list = myTasks.requested.filter(task => {
+                if (filter === 'accepted') return task.accepted;
+                if (filter === 'pending') return !task.accepted;
+                return true;
+            });
+
+            if (list.length === 0) {
+                return `<p class="text-gray-400 text-center py-8">No hay tareas solicitadas con este filtro.</p>`;
+            }
+
+            return list.map(task => {
+                const statusColor = task.accepted ? 'bg-brs-accepted' : 'bg-brs-pending';
+                const statusText = task.accepted ? '¡Ayudante Encontrado!' : 'Esperando Ayudante';
+                const helperName = task.accepted ? ` por ${userDB[task.helperId]?.name || task.helperId}` : '';
+
+                return `
+                    <div class="bg-brs-card p-4 rounded-lg mb-3 border border-gray-700 text-left">
+                        <div class="flex justify-between items-start mb-2">
+                            <p class="font-bold text-lg text-brs-text">${task.title}</p>
+                            <span class="text-xs font-semibold px-2 py-1 rounded-full text-white ${statusColor}">
+                                ${statusText}
+                            </span>
+                        </div>
+                        <p class="text-sm text-gray-300 mb-2">${task.description}</p>
+                        <div class="text-xs text-gray-400 space-y-1 mt-3">
+                            <p class="flex items-center"><i data-lucide="clock" class="w-3 h-3 mr-1.5"></i>${task.time}</p>
+                            <p class="flex items-center"><i data-lucide="map-pin" class="w-3 h-3 mr-1.5"></i>${task.location}</p>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        /**
+         * Aplica el filtro de tareas solicitadas.
+         * @param {string} filter - 'all', 'accepted', o 'pending'.
+         */
+        function filterRequestedTasks(filter) {
+            const listDiv = document.getElementById('requested-tasks-list');
+            listDiv.innerHTML = renderRequestedTasks(filter);
+
+            // Actualizar el estilo de los botones de filtro
+            document.querySelectorAll('#profile-section-content button[id^="filter-"]').forEach(btn => {
+                btn.classList.remove('bg-brs-accent', 'text-white', 'bg-brs-accepted', 'bg-brs-pending');
+                // Restablecer estilos por defecto
+                if (btn.id.includes('accepted')) {
+                     btn.classList.add('bg-brs-accepted/20', 'text-brs-accepted');
+                } else if (btn.id.includes('pending')) {
+                    btn.classList.add('bg-brs-pending/20', 'text-brs-pending');
+                } else { // all
+                    btn.classList.add('bg-brs-accent/20', 'text-brs-accent');
+                }
+
+            });
+            // Aplicar estilo activo
+            const activeBtn = document.getElementById(`filter-${filter}`);
+            activeBtn.classList.remove('bg-brs-accent/20', 'text-brs-accent', 'bg-brs-accepted/20', 'text-brs-accepted', 'bg-brs-pending/20', 'text-brs-pending');
+            activeBtn.classList.add('bg-brs-accent', 'text-white'); // Usar el color de acento principal para el activo
+
+            lucide.createIcons();
+        }
+
+        // --- 3. FUNCIONES DE INTERACCIÓN (Botones, Modals, Formularios) ---
+
+        /**
+         * Simula la aceptación de una tarea en el menú principal
+         * @param {string} taskId - ID de la tarea a aceptar.
+         */
+        function acceptTask(taskId) {
+            // Simular que el usuario acepta la tarea
+            const taskTitle = (taskId.includes('manuel')) ? "Ayuda a Manuel con la compra" : "Acompañar a Maribel a pasear";
+            currentUser.hoursGained += 2; // Simular 2 horas ganadas
+            currentUser.tasksCompleted += 1; // Simular tarea completada
+
+            // Mostrar el modal de mensaje
+            showMessageModal(
+                '¡Tarea Aceptada!',
+                `Te has apuntado para: ${taskTitle}. Revisa la sección "Tareas Pendientes" de tu perfil. Has ganado 2 horas de crédito.`
+            );
+
+            // Esto es solo una maqueta, no se actualiza la vista del feed.
+        }
+
+        /**
+         * Simula la publicación de una nueva solicitud de ayuda.
+         */
+        function submitRequest() {
+            const title = document.getElementById('request-title').value.trim();
+            const description = document.getElementById('request-description').value.trim();
+            const time = document.getElementById('request-time').value.trim();
+            const location = document.getElementById('request-location').value.trim();
+            const messageDiv = document.getElementById('request-message');
+
+            if (!title || !description || !time || !location) {
+                messageDiv.textContent = 'Por favor, rellena todos los campos de la solicitud.';
+                messageDiv.classList.remove('hidden', 'text-brs-accepted');
+                messageDiv.classList.add('text-brs-pending');
+                return;
+            }
+
+            // Simular la publicación y añadirla a las tareas solicitadas propias (no aceptada)
+            const newTaskId = `req_${Date.now()}`;
+            myTasks.requested.unshift({
+                id: newTaskId,
+                title: title,
+                description: description,
+                time: time,
+                location: location,
+                accepted: false,
+                helperId: null
+            });
+
+            // Limpiar formulario y mostrar éxito
+            document.getElementById('new-request-form').reset();
+            messageDiv.textContent = '¡Tu solicitud ha sido publicada con éxito! Revisa tu perfil.';
+            messageDiv.classList.remove('hidden', 'text-brs-pending');
+            messageDiv.classList.add('text-brs-accepted');
+
+            // Ocultar mensaje después de 3 segundos
+            setTimeout(() => {
+                messageDiv.classList.add('hidden');
+            }, 3000);
+        }
+
+        /**
+         * Abre el modal de edición de perfil.
+         */
+        function openEditModal() {
+            document.getElementById('edit-name').value = currentUser.name;
+            document.getElementById('edit-username').value = currentUser.username;
+            document.getElementById('edit-age').value = currentUser.age;
+            document.getElementById('edit-profile-modal').style.display = 'flex';
+        }
+
+        /**
+         * Cierra el modal de edición de perfil.
+         */
+        function closeEditModal() {
+            document.getElementById('edit-profile-modal').style.display = 'none';
+        }
+
+        /**
+         * Maneja el envío del formulario de edición de perfil.
+         */
+        document.getElementById('edit-profile-form').onsubmit = function(e) {
+            e.preventDefault();
+            currentUser.name = document.getElementById('edit-name').value.trim();
+            currentUser.username = document.getElementById('edit-username').value.trim();
+            currentUser.age = parseInt(document.getElementById('edit-age').value.trim(), 10);
+            
+            // Actualizar el perfil en la base de datos simulada
+            userDB[currentUser.id] = { ...userDB[currentUser.id], ...currentUser };
+            
+            closeEditModal();
+            renderProfile(currentUser.id); // Re-renderizar el perfil con los nuevos datos
+            showMessageModal('Guardado', 'Tu información de perfil ha sido actualizada.');
+        };
+
+        /**
+         * Muestra un modal de mensaje simple.
+         * @param {string} title - Título del mensaje.
+         * @param {string} body - Cuerpo del mensaje.
+         */
+        function showMessageModal(title, body) {
+            document.getElementById('modal-title').textContent = title;
+            document.getElementById('modal-body').textContent = body;
+            document.getElementById('message-modal').style.display = 'flex';
+        }
+
+        /**
+         * Cierra el modal de mensaje.
+         */
+        function closeMessageModal() {
+            document.getElementById('message-modal').style.display = 'none';
+        }
+
+        // --- 4. INICIALIZACIÓN DE LA APP ---
+
+        window.onload = function() {
+            // 1. Mostrar el menú de inicio por defecto
+            showMenu('home-menu');
+
+            // 2. Escuchar clics en las fotos de perfil del feed para ir al perfil del solicitante
+            document.querySelectorAll('.post-profile-pic').forEach(img => {
+                img.addEventListener('click', function() {
+                    const userId = this.getAttribute('data-user-id');
+                    if (userId) {
+                        showMenu('profile-menu', userId);
+                    }
+                });
+            });
+
+             // 3. Crear iconos iniciales (para la barra de navegación)
+            lucide.createIcons();
+
+            // 4. Inicializar filtro de tareas solicitadas
+            filterRequestedTasks('all');
+        };
+
+    </script>
+</body>
+</html>
