@@ -9,31 +9,24 @@
     <!-- Carga de Lucide Icons -->
     <script src="https://unpkg.com/lucide@latest"></script>
     <style>
-        /* Configuración de colores personalizada - PALETA INVERTIDA */
+        /* Configuración de colores personalizada */
         tailwind.config = {
             theme: {
                 extend: {
                     colors: {
-                        // FONDO: Azul Noche Profundo
                         'brs-bg-main': '#00001a',   
-                        
-                        // TARJETAS: Un azul apenas más claro para diferenciar del fondo
                         'brs-card': '#0f1126',      
-                        
-                        // ACENTO / PRINCIPAL: Beige / Crema (#eaccad)
-                        'brs-primary': '#eaccad',   /* Ahora el color principal es el crema */
-                        
-                        // TEXTOS
-                        'brs-text-main': '#eaccad', /* Texto principal crema */
-                        'brs-text-sec': '#94a3b8',  /* Texto secundario gris azulado claro (Slate 400) */
-                        
-                        // BORDES
+                        'brs-primary': '#eaccad',
+                        'brs-text-main': '#eaccad',
+                        'brs-text-sec': '#94a3b8',
                         'brs-border': '#1e293b',    
-                        
-                        // ESTADOS
-                        'brs-pending': '#f59e0b',   /* Amber 500 */
-                        'brs-accepted': '#10b981',  /* Emerald 500 */
+                        'brs-pending': '#f59e0b',
+                        'brs-accepted': '#10b981',
+                        'brs-danger': '#ef4444',
                     },
+                    animation: {
+                        'pulse-slow': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                    }
                 }
             }
         }
@@ -47,9 +40,9 @@
             justify-content: center;
             min-height: 100vh;
             margin: 0;
+            overflow-x: hidden; /* Evitar scroll horizontal */
         }
 
-        /* Contenedor principal móvil */
         #app-container {
             width: 100%;
             max-width: 420px;
@@ -59,16 +52,17 @@
             flex-direction: column;
             padding-bottom: 70px;
             min-height: 100vh;
+            position: relative;
         }
 
-        /* BARRA INFERIOR */
+        /* --- ESTILOS MODO NORMAL --- */
         #bottom-nav {
             position: fixed;
             bottom: 0;
             width: 100%;
             max-width: 420px;
-            background-color: #00001a; /* Fondo azul */
-            border-top: 1px solid rgba(234, 204, 173, 0.1); /* Borde crema muy sutil */
+            background-color: #00001a;
+            border-top: 1px solid rgba(234, 204, 173, 0.1);
             z-index: 50;
         }
 
@@ -79,12 +73,12 @@
             justify-content: center;
             padding: 10px 4px;
             flex-grow: 1;
-            color: #475569; /* Gris oscuro para inactivos */
+            color: #475569;
             transition: color 0.3s ease;
         }
         
         .nav-btn.active-btn {
-            color: #eaccad; /* Crema para activos */
+            color: #eaccad;
             font-weight: 700;
         }
 
@@ -97,15 +91,14 @@
             align-items: center;
         }
 
-        /* Inputs en modo oscuro */
         .profile-input {
             width: 100%;
             padding: 12px;
             margin-bottom: 12px;
             border-radius: 8px;
             border: 1px solid #1e293b;
-            background-color: #0a0b1e; /* Fondo oscuro */
-            color: #eaccad; /* Texto crema */
+            background-color: #0a0b1e;
+            color: #eaccad;
             outline: none;
         }
         .profile-input:focus {
@@ -138,143 +131,444 @@
         }
         
         .modal-content {
-            background-color: #0f1126; /* Fondo tarjeta oscura */
+            background-color: #0f1126;
             border: 1px solid #1e293b;
             color: #eaccad;
         }
         
-        /* Botones principales: Fondo Crema, Texto Azul */
         .btn-primary {
             background-color: #eaccad;
             color: #00001a; 
         }
         .btn-primary:hover {
-            background-color: #dcbfa3; /* Un poco más oscuro al hover */
+            background-color: #dcbfa3;
         }
         
-        /* Badges de estado */
         .badge-pending { background-color: rgba(245, 158, 11, 0.2); color: #f59e0b; }
         .badge-accepted { background-color: rgba(16, 185, 129, 0.2); color: #10b981; }
 
+        /* --- ESTILOS MODO SUPER SIMPLE --- */
+        #super-simple-interface {
+            display: none; /* Oculto por defecto */
+            flex-direction: column;
+            background-color: #00001a;
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 100;
+            padding: 20px;
+            overflow-y: auto;
+        }
+
+        .simple-btn-large {
+            width: 100%;
+            height: 140px;
+            border-radius: 20px;
+            font-size: 28px;
+            font-weight: 900;
+            margin-bottom: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            transition: transform 0.1s;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+            text-transform: uppercase;
+        }
+        
+        .simple-btn-large:active {
+            transform: scale(0.98);
+        }
+
+        .simple-btn-help {
+            background-color: #eaccad;
+            color: #00001a;
+            border: 4px solid #eaccad;
+        }
+
+        .simple-btn-list {
+            background-color: #0f1126;
+            color: #eaccad;
+            border: 4px solid #eaccad;
+        }
+
+        .simple-header {
+            font-size: 22px;
+            font-weight: bold;
+            color: #eaccad;
+            text-align: center;
+            margin-bottom: 20px;
+            padding: 10px;
+            border-bottom: 2px solid #333;
+        }
+
+        .simple-card {
+            background-color: #0f1126;
+            border: 2px solid #eaccad;
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        .simple-input-area {
+            width: 100%;
+            min-height: 80px;
+            background-color: #1e293b;
+            color: white;
+            font-size: 24px;
+            padding: 15px;
+            border-radius: 10px;
+            border: 2px solid #eaccad;
+            margin-bottom: 20px;
+            cursor: pointer;
+            color-scheme: dark;
+        }
+
+        /* Estilos nuevos para los botones de selección (Toggle Buttons) */
+        .simple-toggle-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+
+        .simple-toggle-btn {
+            background-color: #0f1126;
+            border: 3px solid #334155;
+            color: #94a3b8;
+            padding: 20px 10px;
+            border-radius: 15px;
+            font-size: 18px;
+            font-weight: bold;
+            text-align: center;
+            transition: all 0.2s;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* Estado seleccionado */
+        .simple-toggle-btn.selected {
+            background-color: #eaccad;
+            color: #00001a;
+            border-color: #eaccad;
+            transform: scale(1.05);
+            box-shadow: 0 0 15px rgba(234, 204, 173, 0.3);
+        }
+
+        .simple-toggle-btn.full-width {
+            grid-column: span 2;
+        }
+
+        /* Input mode modal overlay */
+        .input-mode-overlay {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0,0,0,0.95);
+            z-index: 200;
+            display: none;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
     </style>
 </head>
 <body>
 
     <div id="app-container">
 
-        <!-- Cabecera -->
-        <header class="p-4 border-b border-white/5 sticky top-0 z-40 backdrop-blur-md bg-opacity-90 bg-brs-bg-main shadow-lg">
-            <h1 class="text-2xl font-black text-center text-brs-primary tracking-widest uppercase" id="app-name">KAIRÓS</h1>
-        </header>
+        <!-- MODO NORMAL (Contenedor Wrapper) -->
+        <div id="normal-interface">
+            <!-- Cabecera -->
+            <header class="p-4 border-b border-white/5 sticky top-0 z-40 backdrop-blur-md bg-opacity-90 bg-brs-bg-main shadow-lg flex justify-between items-center">
+                <h1 class="text-2xl font-black text-brs-primary tracking-widest uppercase" id="app-name">KAIRÓS</h1>
+                <!-- Botón de Modo Simple -->
+                <button onclick="toggleSimpleMode()" class="bg-brs-card border border-brs-primary text-brs-primary px-3 py-1 rounded-lg text-xs font-bold shadow-md hover:bg-white/10 transition">
+                    MODO SUPERSIMPLE
+                </button>
+            </header>
 
-        <!-- 1. Menú Principal -->
-        <div id="home-menu" class="menu-page">
-            <h2 class="text-2xl font-bold mb-6 text-brs-primary w-full text-left">Oportunidades de Ayuda</h2>
+            <!-- 1. Menú Principal -->
+            <div id="home-menu" class="menu-page">
+                <h2 class="text-2xl font-bold mb-6 text-brs-primary w-full text-left">Oportunidades de Ayuda</h2>
 
-            <div id="requests-list" class="space-y-5 w-full pb-8">
-                <!-- Tarjeta 1 -->
-                <div class="p-5 bg-brs-card rounded-xl shadow-lg border border-white/5">
-                    <div class="flex items-center justify-between mb-3">
-                        <div class="flex items-center space-x-3">
-                            <img src="https://placehold.co/40x40/00001a/eaccad?text=M" alt="Foto" class="post-profile-pic" data-user-id="manuel">
-                            <h3 class="text-lg font-bold text-brs-primary">Ayuda a Manuel</h3>
+                <div id="requests-list" class="space-y-5 w-full pb-8">
+                    <!-- Tarjeta 1 -->
+                    <div class="p-5 bg-brs-card rounded-xl shadow-lg border border-white/5">
+                        <div class="flex items-center justify-between mb-3">
+                            <div class="flex items-center space-x-3">
+                                <img src="https://placehold.co/40x40/00001a/eaccad?text=M" alt="Foto" class="post-profile-pic" data-user-id="manuel">
+                                <h3 class="text-lg font-bold text-brs-primary">Ayuda a Manuel</h3>
+                            </div>
+                            <span class="text-xs font-medium text-brs-text-sec bg-white/5 px-2 py-1 rounded-full">Hace 1h</span>
                         </div>
-                        <span class="text-xs font-medium text-brs-text-sec bg-white/5 px-2 py-1 rounded-full">Hace 1h</span>
-                    </div>
 
-                    <p class="text-brs-text-sec mb-4 text-sm leading-relaxed">Necesito a alguien que me acompañe a hacer la compra semanal y cargar las bolsas pesadas.</p>
+                        <p class="text-brs-text-sec mb-4 text-sm leading-relaxed">Necesito a alguien que me acompañe a hacer la compra semanal y cargar las bolsas pesadas.</p>
 
-                    <div class="text-xs text-brs-text-sec space-y-2 mb-5 pl-3 border-l-2 border-brs-primary/50">
-                        <p class="flex items-center"><i data-lucide="clock" class="w-4 h-4 mr-2 text-brs-primary"></i>Miércoles, 10:00 - 12:00</p>
-                        <p class="flex items-center"><i data-lucide="map-pin" class="w-4 h-4 mr-2 text-brs-primary"></i>Madrid, Barrio Salamanca</p>
-                    </div>
-
-                    <button onclick="acceptTask('manuel_purchase')" class="w-full btn-primary font-bold py-3 rounded-lg transition duration-200 shadow-md flex justify-center items-center hover:shadow-lg hover:scale-[1.01] transform">
-                        <i data-lucide="hand-heart" class="w-5 h-5 mr-2"></i>Ofrecer Ayuda
-                    </button>
-                </div>
-
-                <!-- Tarjeta 2 -->
-                <div class="p-5 bg-brs-card rounded-xl shadow-lg border border-white/5">
-                    <div class="flex items-center justify-between mb-3">
-                        <div class="flex items-center space-x-3">
-                            <img src="https://placehold.co/40x40/333333/eaccad?text=MR" alt="Foto" class="post-profile-pic" data-user-id="maribel">
-                            <h3 class="text-lg font-bold text-brs-primary">Paseo con Maribel</h3>
+                        <div class="text-xs text-brs-text-sec space-y-2 mb-5 pl-3 border-l-2 border-brs-primary/50">
+                            <p class="flex items-center"><i data-lucide="clock" class="w-4 h-4 mr-2 text-brs-primary"></i>Miércoles, 10:00 - 12:00</p>
+                            <p class="flex items-center"><i data-lucide="map-pin" class="w-4 h-4 mr-2 text-brs-primary"></i>Madrid, Barrio Salamanca</p>
                         </div>
-                        <span class="text-xs font-medium text-brs-text-sec bg-white/5 px-2 py-1 rounded-full">Hace 3h</span>
+
+                        <button onclick="acceptTask('manuel_purchase')" class="w-full btn-primary font-bold py-3 rounded-lg transition duration-200 shadow-md flex justify-center items-center hover:shadow-lg hover:scale-[1.01] transform">
+                            <i data-lucide="hand-heart" class="w-5 h-5 mr-2"></i>Ofrecer Ayuda
+                        </button>
                     </div>
 
-                    <p class="text-brs-text-sec mb-4 text-sm leading-relaxed">Busco compañía para dar un paseo diario por el parque y charlar un rato.</p>
+                    <!-- Tarjeta 2 -->
+                    <div class="p-5 bg-brs-card rounded-xl shadow-lg border border-white/5">
+                        <div class="flex items-center justify-between mb-3">
+                            <div class="flex items-center space-x-3">
+                                <img src="https://placehold.co/40x40/333333/eaccad?text=MR" alt="Foto" class="post-profile-pic" data-user-id="maribel">
+                                <h3 class="text-lg font-bold text-brs-primary">Paseo con Maribel</h3>
+                            </div>
+                            <span class="text-xs font-medium text-brs-text-sec bg-white/5 px-2 py-1 rounded-full">Hace 3h</span>
+                        </div>
 
-                    <div class="text-xs text-brs-text-sec space-y-2 mb-5 pl-3 border-l-2 border-brs-primary/50">
-                        <p class="flex items-center"><i data-lucide="clock" class="w-4 h-4 mr-2 text-brs-primary"></i>Lun, Jue, Vie 17:00</p>
-                        <p class="flex items-center"><i data-lucide="map-pin" class="w-4 h-4 mr-2 text-brs-primary"></i>Sevilla, Triana</p>
+                        <p class="text-brs-text-sec mb-4 text-sm leading-relaxed">Busco compañía para dar un paseo diario por el parque y charlar un rato.</p>
+
+                        <div class="text-xs text-brs-text-sec space-y-2 mb-5 pl-3 border-l-2 border-brs-primary/50">
+                            <p class="flex items-center"><i data-lucide="clock" class="w-4 h-4 mr-2 text-brs-primary"></i>Lun, Jue, Vie 17:00</p>
+                            <p class="flex items-center"><i data-lucide="map-pin" class="w-4 h-4 mr-2 text-brs-primary"></i>Sevilla, Triana</p>
+                        </div>
+
+                        <button onclick="acceptTask('maribel_walk')" class="w-full btn-primary font-bold py-3 rounded-lg transition duration-200 shadow-md flex justify-center items-center hover:shadow-lg hover:scale-[1.01] transform">
+                            <i data-lucide="hand-heart" class="w-5 h-5 mr-2"></i>Ofrecer Ayuda
+                        </button>
                     </div>
-
-                    <button onclick="acceptTask('maribel_walk')" class="w-full btn-primary font-bold py-3 rounded-lg transition duration-200 shadow-md flex justify-center items-center hover:shadow-lg hover:scale-[1.01] transform">
-                        <i data-lucide="hand-heart" class="w-5 h-5 mr-2"></i>Ofrecer Ayuda
-                    </button>
                 </div>
             </div>
+
+            <!-- 2. Menú de Solicitud (Normal) -->
+            <div id="request-menu" class="menu-page">
+                <h2 class="text-2xl font-bold mb-6 text-brs-primary text-center">Solicitar Tiempo</h2>
+
+                <form id="new-request-form" class="space-y-5 p-6 bg-brs-card rounded-xl shadow-lg border border-white/5 w-full max-w-sm text-left">
+                    <div class="flex flex-col">
+                        <label for="request-title" class="mb-2 text-sm font-bold text-brs-primary">Título</label>
+                        <input type="text" id="request-title" class="profile-input" placeholder="Ej: Ir al médico">
+                    </div>
+
+                    <div class="flex flex-col">
+                        <label for="request-description" class="mb-2 text-sm font-bold text-brs-primary">Descripción</label>
+                        <textarea id="request-description" class="profile-input h-24 resize-none" placeholder="¿Qué necesitas?"></textarea>
+                    </div>
+
+                    <div class="flex flex-col">
+                        <label for="request-time" class="mb-2 text-sm font-bold text-brs-primary">Horario</label>
+                        <input type="text" id="request-time" class="profile-input" placeholder="Ej: Mañana 9:30h">
+                    </div>
+
+                    <div class="flex flex-col">
+                        <label for="request-location" class="mb-2 text-sm font-bold text-brs-primary">Ubicación</label>
+                        <input type="text" id="request-location" class="profile-input" placeholder="Ej: Centro">
+                    </div>
+
+                    <button type="button" onclick="submitRequest()" class="w-full btn-primary font-bold py-3 rounded-lg transition duration-200 shadow-md flex justify-center items-center hover:shadow-lg">
+                        <i data-lucide="send" class="w-5 h-5 mr-2"></i> Publicar
+                    </button>
+
+                    <div id="request-message" class="mt-4 text-center font-bold text-brs-primary hidden"></div>
+                </form>
+            </div>
+
+            <!-- 3. Menú de Perfil -->
+            <div id="profile-menu" class="menu-page">
+                <div id="profile-content" class="w-full max-w-sm flex flex-col items-center pb-20">
+                    <!-- El contenido se inyecta aquí -->
+                </div>
+            </div>
+
+            <!-- Barra de Navegación Inferior -->
+            <nav id="bottom-nav" class="flex justify-around items-center h-16">
+                <button onclick="showMenu('home-menu')" class="nav-btn transition duration-150" data-menu="home-menu">
+                    <i data-lucide="home" class="w-6 h-6 mb-1"></i>
+                    <span class="text-xs">Inicio</span>
+                </button>
+                <button onclick="showMenu('request-menu')" class="nav-btn transition duration-150" data-menu="request-menu">
+                    <i data-lucide="plus-circle" class="w-6 h-6 mb-1"></i>
+                    <span class="text-xs">Solicitar</span>
+                </button>
+                <button onclick="showMenu('profile-menu', 'my_user')" class="nav-btn transition duration-150" data-menu="profile-menu">
+                    <i data-lucide="user" class="w-6 h-6 mb-1"></i>
+                    <span class="text-xs">Perfil</span>
+                </button>
+            </nav>
         </div>
+        <!-- FIN MODO NORMAL -->
 
-        <!-- 2. Menú de Solicitud -->
-        <div id="request-menu" class="menu-page">
-            <h2 class="text-2xl font-bold mb-6 text-brs-primary text-center">Solicitar Tiempo</h2>
 
-            <form id="new-request-form" class="space-y-5 p-6 bg-brs-card rounded-xl shadow-lg border border-white/5 w-full max-w-sm text-left">
-                <div class="flex flex-col">
-                    <label for="request-title" class="mb-2 text-sm font-bold text-brs-primary">Título</label>
-                    <input type="text" id="request-title" class="profile-input" placeholder="Ej: Ir al médico">
-                </div>
+        <!-- ============================================== -->
+        <!-- MODO SUPER SIMPLE -->
+        <!-- ============================================== -->
+        <div id="super-simple-interface">
+            <div class="w-full flex justify-end mb-4">
+                 <button onclick="toggleSimpleMode()" class="text-xs text-brs-text-sec underline p-2">
+                    Volver a modo normal
+                </button>
+            </div>
 
-                <div class="flex flex-col">
-                    <label for="request-description" class="mb-2 text-sm font-bold text-brs-primary">Descripción</label>
-                    <textarea id="request-description" class="profile-input h-24 resize-none" placeholder="¿Qué necesitas?"></textarea>
-                </div>
-
-                <div class="flex flex-col">
-                    <label for="request-time" class="mb-2 text-sm font-bold text-brs-primary">Horario</label>
-                    <input type="text" id="request-time" class="profile-input" placeholder="Ej: Mañana 9:30h">
-                </div>
-
-                <div class="flex flex-col">
-                    <label for="request-location" class="mb-2 text-sm font-bold text-brs-primary">Ubicación</label>
-                    <input type="text" id="request-location" class="profile-input" placeholder="Ej: Centro">
-                </div>
-
-                <button type="button" onclick="submitRequest()" class="w-full btn-primary font-bold py-3 rounded-lg transition duration-200 shadow-md flex justify-center items-center hover:shadow-lg">
-                    <i data-lucide="send" class="w-5 h-5 mr-2"></i> Publicar
+            <!-- HOME SIMPLE -->
+            <div id="simple-home-view" class="w-full h-full flex flex-col justify-center pb-20">
+                <h2 class="text-3xl font-black text-center text-brs-primary mb-8">¿QUÉ NECESITAS?</h2>
+                
+                <button onclick="showSimpleView('simple-ask-view')" class="simple-btn-large simple-btn-help">
+                    <i data-lucide="hand-helping" class="w-12 h-12 mb-2"></i>
+                    PEDIR AYUDA
                 </button>
 
-                <div id="request-message" class="mt-4 text-center font-bold text-brs-primary hidden"></div>
-            </form>
-        </div>
+                <button onclick="renderSimpleList(); showSimpleView('simple-list-view')" class="simple-btn-large simple-btn-list">
+                    <i data-lucide="clipboard-list" class="w-12 h-12 mb-2"></i>
+                    MIS SOLICITUDES
+                </button>
+            </div>
 
-        <!-- 3. Menú de Perfil -->
-        <div id="profile-menu" class="menu-page">
-            <div id="profile-content" class="w-full max-w-sm flex flex-col items-center pb-20">
-                <!-- El contenido se inyecta aquí -->
+            <!-- PEDIR AYUDA SIMPLE -->
+            <div id="simple-ask-view" class="hidden w-full h-full flex-col pt-4 pb-20">
+                <button onclick="showSimpleView('simple-home-view')" class="self-start text-brs-primary font-bold mb-4 flex items-center text-xl">
+                    <i data-lucide="arrow-left" class="w-8 h-8 mr-2"></i> ATRÁS
+                </button>
+
+                <!-- PASO 1: QUÉ -->
+                <div class="simple-header">1. ¿QUÉ NECESITAS?</div>
+                
+                <div class="relative w-full mb-6">
+                    <div id="simple-input-placeholder" onclick="openInputModeSelector()" class="simple-input-area flex items-center justify-center text-center text-gray-400" style="min-height: 120px;">
+                        Pulsa aquí para escribir o hablar...
+                    </div>
+                    <textarea id="simple-text-area" class="simple-input-area hidden focus:outline-none focus:border-brs-primary text-2xl" placeholder="Escribe aquí..." style="min-height: 120px;"></textarea>
+                    
+                    <div id="mic-indicator" class="hidden absolute bottom-4 right-4 text-red-500 animate-pulse">
+                        <i data-lucide="mic" class="w-8 h-8"></i>
+                    </div>
+                </div>
+
+                <!-- PASO 2: CUÁNDO (NUEVO SISTEMA DE BOTONES) -->
+                <div class="simple-header mt-2">2. ¿QUÉ DÍA?</div>
+                <div class="simple-toggle-grid" id="date-buttons">
+                    <button type="button" class="simple-toggle-btn" onclick="selectSimpleDate(0, this)">
+                        <i data-lucide="calendar-check" class="w-8 h-8 mb-2"></i> HOY
+                    </button>
+                    <button type="button" class="simple-toggle-btn" onclick="selectSimpleDate(1, this)">
+                        <i data-lucide="sun" class="w-8 h-8 mb-2"></i> MAÑANA
+                    </button>
+                    <button type="button" class="simple-toggle-btn" onclick="selectSimpleDate(2, this)">
+                        <span class="text-3xl font-bold mb-1">2</span> DÍAS
+                    </button>
+                    <button type="button" class="simple-toggle-btn" onclick="selectSimpleDate(3, this)">
+                        <span class="text-3xl font-bold mb-1">3</span> DÍAS
+                    </button>
+                </div>
+
+                <div class="simple-header mt-2">3. ¿A QUÉ HORA?</div>
+                <div class="simple-toggle-grid" id="time-buttons">
+                    <button type="button" class="simple-toggle-btn" onclick="selectSimpleTime('10:30', this)">
+                        <i data-lucide="sunrise" class="w-8 h-8 mb-2"></i> MAÑANA<br><span class="text-xs font-normal">10:30</span>
+                    </button>
+                    <button type="button" class="simple-toggle-btn" onclick="selectSimpleTime('13:00', this)">
+                        <i data-lucide="utensils" class="w-8 h-8 mb-2"></i> MEDIODÍA<br><span class="text-xs font-normal">13:00</span>
+                    </button>
+                    <button type="button" class="simple-toggle-btn" onclick="selectSimpleTime('17:00', this)">
+                        <i data-lucide="sunset" class="w-8 h-8 mb-2"></i> TARDE<br><span class="text-xs font-normal">17:00</span>
+                    </button>
+                    <button type="button" class="simple-toggle-btn" onclick="selectSimpleTime('21:00', this)">
+                        <i data-lucide="moon" class="w-8 h-8 mb-2"></i> NOCHE<br><span class="text-xs font-normal">21:00</span>
+                    </button>
+                </div>
+
+                <button onclick="showSimpleSummary()" class="simple-btn-large simple-btn-help mt-8 mb-10" style="height: 100px; font-size: 24px; background-color: #10b981; border-color: #10b981; color: white;">
+                    CONTINUAR
+                </button>
+            </div>
+
+            <!-- RESUMEN / CONFIRMACIÓN SIMPLE -->
+            <div id="simple-summary-view" class="hidden w-full h-full flex-col pt-4 pb-20 items-center">
+                <button onclick="showSimpleView('simple-ask-view')" class="self-start text-brs-primary font-bold mb-4 flex items-center text-xl">
+                    <i data-lucide="arrow-left" class="w-8 h-8 mr-2"></i> CORREGIR
+                </button>
+
+                <div class="simple-header">CONFIRMAR SOLICITUD</div>
+                
+                <div class="bg-brs-card p-6 rounded-2xl border-2 border-brs-primary w-full text-center mb-6">
+                    <p class="text-lg text-brs-text-sec mb-2">Vas a pedir ayuda para:</p>
+                    <p id="summary-desc" class="text-2xl font-bold text-white mb-6 italic">"..."</p>
+                    
+                    <p class="text-lg text-brs-text-sec mb-2">El día:</p>
+                    <p id="summary-date" class="text-2xl font-bold text-brs-primary mb-6">...</p>
+
+                    <p class="text-lg text-brs-text-sec mb-2">A las:</p>
+                    <!-- Selector de Hora Editable -->
+                    <div class="relative inline-block">
+                        <input type="time" id="summary-time-input" class="bg-gray-800 text-white text-4xl font-bold p-4 rounded-xl border-2 border-brs-primary text-center w-full" style="color-scheme: dark;">
+                        <p class="text-xs text-brs-text-sec mt-2">(Toca la hora para cambiarla si quieres)</p>
+                    </div>
+                </div>
+
+                <button onclick="confirmSimpleSubmission()" class="simple-btn-large simple-btn-help" style="height: 100px; font-size: 24px; background-color: #10b981; border-color: #10b981; color: white;">
+                    CONFIRMAR Y ENVIAR
+                </button>
+            </div>
+
+            <!-- MIS SOLICITUDES SIMPLE -->
+            <div id="simple-list-view" class="hidden w-full h-full flex-col pt-4">
+                <button onclick="showSimpleView('simple-home-view')" class="self-start text-brs-primary font-bold mb-4 flex items-center text-xl">
+                    <i data-lucide="arrow-left" class="w-8 h-8 mr-2"></i> ATRÁS
+                </button>
+                <div class="simple-header">MIS COSAS PENDIENTES</div>
+                <div id="simple-tasks-container" class="pb-10">
+                    <!-- Se llena con JS -->
+                </div>
             </div>
         </div>
 
-        <!-- Barra de Navegación Inferior -->
-        <nav id="bottom-nav" class="flex justify-around items-center h-16">
-            <button onclick="showMenu('home-menu')" class="nav-btn transition duration-150" data-menu="home-menu">
-                <i data-lucide="home" class="w-6 h-6 mb-1"></i>
-                <span class="text-xs">Inicio</span>
+        <!-- MODAL SELECCION INPUT (TECLADO vs VOZ) -->
+        <div id="input-mode-modal" class="input-mode-overlay">
+            <h3 class="text-3xl font-bold text-white mb-10 text-center">¿Cómo quieres escribir?</h3>
+            
+            <button onclick="selectInputMode('keyboard')" class="bg-blue-600 text-white w-full max-w-xs p-8 rounded-2xl mb-6 flex flex-col items-center shadow-lg border-2 border-white">
+                <i data-lucide="keyboard" class="w-16 h-16 mb-4"></i>
+                <span class="text-2xl font-bold">TECLADO</span>
             </button>
-            <button onclick="showMenu('request-menu')" class="nav-btn transition duration-150" data-menu="request-menu">
-                <i data-lucide="plus-circle" class="w-6 h-6 mb-1"></i>
-                <span class="text-xs">Solicitar</span>
-            </button>
-            <button onclick="showMenu('profile-menu', 'my_user')" class="nav-btn transition duration-150" data-menu="profile-menu">
-                <i data-lucide="user" class="w-6 h-6 mb-1"></i>
-                <span class="text-xs">Perfil</span>
-            </button>
-        </nav>
 
-        <!-- MODAL Editar Perfil -->
+            <button onclick="selectInputMode('voice')" class="bg-red-500 text-white w-full max-w-xs p-8 rounded-2xl flex flex-col items-center shadow-lg border-2 border-white">
+                <i data-lucide="mic" class="w-16 h-16 mb-4"></i>
+                <span class="text-2xl font-bold">HABLAR (DICTAR)</span>
+            </button>
+            
+            <button onclick="closeInputModeSelector()" class="mt-10 text-white underline text-xl">Cancelar</button>
+        </div>
+
+        <!-- MODAL CONFIRMACION CANCELAR (SIMPLE) -->
+        <div id="simple-cancel-modal" class="input-mode-overlay" style="background: rgba(50,0,0,0.95);">
+            <i data-lucide="alert-triangle" class="w-20 h-20 text-yellow-500 mb-6"></i>
+            <h3 class="text-3xl font-bold text-white mb-4 text-center">¡CUIDADO!</h3>
+            <p class="text-xl text-white text-center mb-8 px-4">Estás a punto de cancelar la ayuda. ¿Estás seguro de que ya no la necesitas?</p>
+            
+            <div class="flex flex-col w-full max-w-xs space-y-4">
+                <button onclick="confirmCancelSimple()" class="bg-red-600 text-white p-6 rounded-xl text-xl font-bold shadow-lg border-2 border-white">
+                    SÍ, CANCELAR AYUDA
+                </button>
+                <button onclick="closeCancelModalSimple()" class="bg-green-600 text-white p-6 rounded-xl text-xl font-bold shadow-lg border-2 border-white">
+                    NO, MANTENERLA
+                </button>
+            </div>
+        </div>
+
+        <!-- MODAL OK (FEEDBACK FINAL) -->
+        <div id="simple-success-modal" class="input-mode-overlay" style="background: rgba(0,20,0,0.95);">
+             <div class="flex flex-col items-center justify-center h-full animate-pulse">
+                <i data-lucide="check-circle" class="w-32 h-32 text-green-500 mb-6"></i>
+                <h2 class="text-3xl font-black text-brs-primary text-center">¡SOLICITUD ENVIADA!</h2>
+                <p class="text-xl text-center mt-4 text-white px-4">Alguien te ayudará pronto.</p>
+            </div>
+        </div>
+
+
+        <!-- MODAL Editar Perfil (NORMAL) -->
         <div id="edit-profile-modal" class="fixed inset-0 bg-black bg-opacity-80 z-50 hidden items-center justify-center p-4 backdrop-blur-sm">
             <div class="bg-brs-card modal-content p-6 rounded-xl w-full max-w-sm shadow-2xl">
                 <h3 class="text-xl font-bold mb-4 text-brs-primary">Editar Perfil</h3>
@@ -303,7 +597,7 @@
             </div>
         </div>
 
-        <!-- MODAL MENSAJES -->
+        <!-- MODAL MENSAJES (GENÉRICO) -->
         <div id="message-modal" class="fixed inset-0 bg-black bg-opacity-80 z-50 hidden items-center justify-center p-4 backdrop-blur-sm">
             <div class="bg-brs-card modal-content p-6 rounded-xl w-full max-w-xs shadow-2xl text-center">
                 <div class="mb-4 text-brs-primary flex justify-center">
@@ -382,10 +676,11 @@
             ]
         };
 
+        // --- LÓGICA MODO NORMAL ---
+
         let currentProfileViewId = currentUser.id;
         let currentProfileSection = 'reviews';
 
-        // Función Principal de Navegación
         function showMenu(menuId, viewUserId = currentUser.id) {
             document.querySelectorAll('.menu-page').forEach(menu => {
                 menu.style.display = 'none';
@@ -426,7 +721,6 @@
             if (!profileContent) return;
 
             let html = `
-                <!-- Cabecera Perfil -->
                 <div class="flex flex-col items-center p-6 bg-brs-card rounded-xl border border-white/5 w-full shadow-lg mb-6 mt-2">
                     <img src="${profileData.profilePic}" alt="Perfil" class="w-28 h-28 rounded-full object-cover border-4 border-brs-primary shadow-2xl mb-4">
                     <h3 class="text-2xl font-bold text-brs-primary">${profileData.name}</h3>
@@ -443,7 +737,6 @@
                     ` : ''}
                 </div>
 
-                <!-- Pestañas -->
                 <div class="flex justify-around bg-brs-card w-full rounded-xl shadow-md border border-white/5 mb-4 overflow-hidden">
                     <button class="profile-section-button ${currentProfileSection === 'reviews' ? 'active' : ''}" onclick="changeProfileSection('reviews')">
                         <div class="flex flex-col items-center">
@@ -467,7 +760,6 @@
                     ` : ''}
                 </div>
 
-                <!-- Contenido Dinámico Sección -->
                 <div id="profile-section-content" class="w-full"></div>
             `;
             
@@ -577,13 +869,11 @@
             
             const btns = document.querySelectorAll('#profile-section-content button[id^="filter-"]');
             btns.forEach(btn => {
-                // Inactivo: Borde crema, fondo transparente, texto crema (un poco más apagado)
                 btn.className = 'text-xs font-bold px-4 py-2 rounded-lg border border-brs-primary text-brs-primary bg-transparent hover:bg-white/10 transition-all duration-200 opacity-70';
             });
             
             const activeBtn = document.getElementById(`filter-${filter}`);
             if(activeBtn) {
-                // Activo: Fondo crema, texto azul
                  activeBtn.className = 'text-xs font-bold px-4 py-2 rounded-lg border border-brs-primary bg-brs-primary text-[#00001a] shadow-md transform scale-105 opacity-100';
             }
             lucide.createIcons();
@@ -610,7 +900,7 @@
                 return;
             }
 
-            myTasks.requested.unshift({ id: `req_${Date.now()}`, title, description, time, location, accepted: false });
+            myTasks.requested.unshift({ id: `req_${Date.now()}`, title, description, time, location, accepted: false, helperId: null });
             document.getElementById('new-request-form').reset();
             messageDiv.textContent = '¡Publicado!';
             messageDiv.classList.remove('hidden', 'text-brs-pending');
@@ -644,6 +934,252 @@
         }
         function closeMessageModal() { document.getElementById('message-modal').style.display = 'none'; }
 
+
+        // ==============================================
+        // LÓGICA MODO SUPER SIMPLE
+        // ==============================================
+        
+        let isSimpleMode = false;
+        let taskToCancelId = null;
+        let selectedSimpleDateOffset = null; // 0, 1, 2, 3
+        let selectedSimpleTime = null; // "10:30", etc.
+
+        function toggleSimpleMode() {
+            isSimpleMode = !isSimpleMode;
+            const simpleInterface = document.getElementById('super-simple-interface');
+            const normalInterface = document.getElementById('normal-interface');
+
+            if (isSimpleMode) {
+                normalInterface.style.display = 'none';
+                simpleInterface.style.display = 'flex';
+                showSimpleView('simple-home-view');
+            } else {
+                normalInterface.style.display = 'block';
+                simpleInterface.style.display = 'none';
+                showMenu('home-menu'); // Reset a home normal
+            }
+        }
+
+        function showSimpleView(viewId) {
+            ['simple-home-view', 'simple-ask-view', 'simple-list-view', 'simple-summary-view'].forEach(id => {
+                document.getElementById(id).classList.add('hidden');
+                document.getElementById(id).classList.remove('flex');
+            });
+            const view = document.getElementById(viewId);
+            view.classList.remove('hidden');
+            view.classList.add('flex');
+
+            if(viewId === 'simple-ask-view') {
+                // Reset form
+                document.getElementById('simple-text-area').value = '';
+                document.getElementById('simple-text-area').classList.add('hidden');
+                document.getElementById('simple-input-placeholder').classList.remove('hidden');
+                resetSimpleSelection();
+            }
+        }
+
+        // Selección Input Mode
+        function openInputModeSelector() {
+            document.getElementById('input-mode-modal').style.display = 'flex';
+        }
+
+        function closeInputModeSelector() {
+            document.getElementById('input-mode-modal').style.display = 'none';
+        }
+
+        function selectInputMode(mode) {
+            closeInputModeSelector();
+            const textArea = document.getElementById('simple-text-area');
+            const placeholder = document.getElementById('simple-input-placeholder');
+            
+            placeholder.classList.add('hidden');
+            textArea.classList.remove('hidden');
+            textArea.focus();
+
+            if (mode === 'voice') {
+                startVoiceRecognition();
+            }
+        }
+
+        function startVoiceRecognition() {
+            const micIndicator = document.getElementById('mic-indicator');
+            const textArea = document.getElementById('simple-text-area');
+            
+            if ('webkitSpeechRecognition' in window) {
+                const recognition = new webkitSpeechRecognition();
+                recognition.lang = 'es-ES';
+                recognition.continuous = false;
+                
+                micIndicator.classList.remove('hidden');
+                textArea.placeholder = "Escuchando... habla ahora.";
+
+                recognition.onresult = function(event) {
+                    const transcript = event.results[0][0].transcript;
+                    textArea.value = transcript;
+                    micIndicator.classList.add('hidden');
+                };
+
+                recognition.onerror = function() {
+                    micIndicator.classList.add('hidden');
+                    textArea.value = "Error al escuchar. Por favor, escribe.";
+                };
+
+                recognition.onend = function() {
+                    micIndicator.classList.add('hidden');
+                };
+
+                recognition.start();
+            } else {
+                alert("Tu dispositivo no soporta reconocimiento de voz nativo. Simulando dictado...");
+                micIndicator.classList.remove('hidden');
+                textArea.placeholder = "Simulando escucha...";
+                setTimeout(() => {
+                    textArea.value = "Necesito ayuda para llevar unas cajas al trastero.";
+                    micIndicator.classList.add('hidden');
+                }, 2000);
+            }
+        }
+
+        // Nueva Lógica de Selección de Botones
+        function selectSimpleDate(offset, btnElement) {
+            selectedSimpleDateOffset = offset;
+            // Reset visually
+            document.querySelectorAll('#date-buttons .simple-toggle-btn').forEach(btn => btn.classList.remove('selected'));
+            // Set active
+            btnElement.classList.add('selected');
+        }
+
+        function selectSimpleTime(value, btnElement) {
+            selectedSimpleTime = value;
+            // Reset visually
+            document.querySelectorAll('#time-buttons .simple-toggle-btn').forEach(btn => btn.classList.remove('selected'));
+            // Set active
+            btnElement.classList.add('selected');
+        }
+
+        function resetSimpleSelection() {
+            selectedSimpleDateOffset = null;
+            selectedSimpleTime = null;
+            document.querySelectorAll('.simple-toggle-btn').forEach(btn => btn.classList.remove('selected'));
+        }
+
+        // HELPER: Calcula la fecha real basada en el offset (0=hoy, 1=mañana...)
+        function getDateStringFromOffset(offset) {
+            const date = new Date();
+            date.setDate(date.getDate() + offset);
+            
+            // Opciones para mostrar día de la semana y día del mes en español
+            const options = { weekday: 'long', day: 'numeric', month: 'long' };
+            const dateStr = date.toLocaleDateString('es-ES', options);
+            
+            // Capitalizar la primera letra
+            return dateStr.charAt(0).toUpperCase() + dateStr.slice(1);
+        }
+
+        function showSimpleSummary() {
+            const desc = document.getElementById('simple-text-area').value.trim();
+
+            if(!desc) {
+                alert("Por favor, dinos qué necesitas (Paso 1).");
+                return;
+            }
+            if(selectedSimpleDateOffset === null) {
+                alert("Por favor, toca un botón para elegir QUÉ DÍA necesitas ayuda (Paso 2).");
+                return;
+            }
+            if(!selectedSimpleTime) {
+                alert("Por favor, toca un botón para elegir A QUÉ HORA (Paso 3).");
+                return;
+            }
+
+            // Calcular string de fecha
+            const finalDateString = getDateStringFromOffset(selectedSimpleDateOffset);
+
+            // Rellenar la vista de resumen
+            document.getElementById('summary-desc').textContent = `"${desc}"`;
+            document.getElementById('summary-date').textContent = finalDateString;
+            
+            // Rellenar el input de hora para permitir edición
+            document.getElementById('summary-time-input').value = selectedSimpleTime;
+
+            // Mostrar vista de resumen
+            showSimpleView('simple-summary-view');
+        }
+
+        function confirmSimpleSubmission() {
+            const desc = document.getElementById('simple-text-area').value.trim();
+            const dateStr = document.getElementById('summary-date').textContent;
+            const timeStr = document.getElementById('summary-time-input').value; // Hora final (posiblemente editada)
+
+            // Construir la cadena de tiempo legible para la tarjeta
+            const fullTimeString = `${dateStr}, ${timeStr}`;
+
+            // Añadir a la base de datos
+            myTasks.requested.unshift({ 
+                id: `req_${Date.now()}`, 
+                title: 'Solicitud Rápida', 
+                description: desc, 
+                time: fullTimeString, 
+                location: 'Mi ubicación', 
+                accepted: false, 
+                helperId: null 
+            });
+
+            // Mostrar Modal de Éxito
+            document.getElementById('simple-success-modal').style.display = 'flex';
+            lucide.createIcons();
+            
+            setTimeout(() => {
+                location.reload(); 
+            }, 3000);
+        }
+
+        function renderSimpleList() {
+            const container = document.getElementById('simple-tasks-container');
+            if (myTasks.requested.length === 0) {
+                container.innerHTML = '<p class="text-center text-xl text-gray-500 mt-10">No tienes nada pendiente.</p>';
+                return;
+            }
+
+            container.innerHTML = myTasks.requested.map(task => `
+                <div class="simple-card relative">
+                    <div class="flex justify-between items-start mb-4">
+                        <span class="text-xs font-bold px-3 py-1 rounded-full ${task.accepted ? 'bg-green-900 text-green-300' : 'bg-yellow-900 text-yellow-300'} border ${task.accepted ? 'border-green-500' : 'border-yellow-500'} uppercase tracking-wider">
+                            ${task.accepted ? 'ACEPTADA (Vienen a ayudar)' : 'EN ESPERA (Buscando ayuda)'}
+                        </span>
+                    </div>
+                    <p class="text-2xl font-bold text-white mb-2">"${task.description}"</p>
+                    <p class="text-lg text-brs-primary mb-6 flex items-center">
+                        <i data-lucide="clock" class="w-6 h-6 mr-2"></i> ${task.time}
+                    </p>
+                    
+                    <button onclick="promptCancelSimple('${task.id}')" class="w-full bg-red-900/50 border-2 border-red-500 text-red-300 font-bold py-4 rounded-xl text-xl hover:bg-red-900 transition flex items-center justify-center">
+                        <i data-lucide="x-circle" class="w-6 h-6 mr-2"></i> YA NO LO NECESITO
+                    </button>
+                </div>
+            `).join('');
+            lucide.createIcons();
+        }
+
+        function promptCancelSimple(taskId) {
+            taskToCancelId = taskId;
+            document.getElementById('simple-cancel-modal').style.display = 'flex';
+        }
+
+        function closeCancelModalSimple() {
+            taskToCancelId = null;
+            document.getElementById('simple-cancel-modal').style.display = 'none';
+        }
+
+        function confirmCancelSimple() {
+            if (taskToCancelId) {
+                myTasks.requested = myTasks.requested.filter(t => t.id !== taskToCancelId);
+                closeCancelModalSimple();
+                renderSimpleList();
+            }
+        }
+
+        // Inicialización
         window.onload = function() {
             showMenu('home-menu');
             document.querySelectorAll('.post-profile-pic').forEach(img => {
