@@ -26,6 +26,15 @@
                     },
                     animation: {
                         'pulse-slow': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                        'bounce-in': 'bounceIn 0.5s cubic-bezier(0.8, 0, 1, 1)',
+                    },
+                    keyframes: {
+                        bounceIn: {
+                            '0%': { transform: 'scale(0.3)', opacity: '0' },
+                            '50%': { transform: 'scale(1.05)', opacity: '1' },
+                            '70%': { transform: 'scale(0.9)' },
+                            '100%': { transform: 'scale(1)' },
+                        }
                     }
                 }
             }
@@ -275,6 +284,56 @@
             align-items: center;
             padding: 20px;
         }
+
+        /* --- BLACKJACK EASTER EGG STYLES --- */
+        #blackjack-game {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background-color: #0f3d0f; /* Verde tapete */
+            z-index: 300;
+            flex-direction: column;
+            align-items: center;
+            background-image: radial-gradient(circle, #1a5c1a 0%, #052405 100%);
+            border: 8px solid #3e2723; /* Borde madera */
+        }
+
+        .bj-card {
+            background-color: white;
+            color: black;
+            width: 70px;
+            height: 100px;
+            border-radius: 8px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            padding: 5px;
+            margin: 5px;
+            font-weight: bold;
+            font-size: 18px;
+            box-shadow: 2px 2px 5px rgba(0,0,0,0.5);
+            animation: bounceIn 0.5s;
+        }
+
+        .bj-card.red { color: #d00; }
+        
+        .hand-area {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            min-height: 120px;
+            margin-bottom: 20px;
+        }
+
+        .bj-score-box {
+            background: rgba(0,0,0,0.5);
+            padding: 5px 15px;
+            border-radius: 20px;
+            color: white;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
     </style>
 </head>
 <body>
@@ -524,6 +583,51 @@
                 </div>
             </div>
         </div>
+
+        <!-- ============================================== -->
+        <!-- BLACKJACK EASTER EGG OVERLAY -->
+        <!-- ============================================== -->
+        <div id="blackjack-game">
+            <div class="w-full flex justify-between p-4 items-center bg-black/30 w-full mb-4">
+                <h2 class="text-2xl font-bold text-white">CASINO KAIRÓS ♠️♥️</h2>
+                <button onclick="closeBlackjack()" class="text-white font-bold bg-red-600 px-3 py-1 rounded">SALIR</button>
+            </div>
+
+            <!-- Dealer Area -->
+            <div class="flex flex-col items-center w-full mb-8">
+                <h3 class="text-white font-bold mb-2">BANCA</h3>
+                <div class="bj-score-box" id="dealer-score">0</div>
+                <div id="dealer-hand" class="hand-area">
+                    <!-- Cartas dealer -->
+                </div>
+            </div>
+
+            <!-- Player Area -->
+            <div class="flex flex-col items-center w-full flex-grow">
+                <h3 class="text-white font-bold mb-2">TÚ</h3>
+                <div class="bj-score-box" id="player-score">0</div>
+                <div id="player-hand" class="hand-area">
+                    <!-- Cartas jugador -->
+                </div>
+                
+                <div id="bj-message" class="text-2xl font-black text-yellow-400 mb-6 h-8 text-center px-4"></div>
+
+                <!-- Controls -->
+                <div id="bj-controls" class="flex space-x-4 mb-10">
+                    <button onclick="hit()" class="bg-green-500 border-b-4 border-green-700 text-white font-bold py-4 px-8 rounded-xl text-xl active:translate-y-1 active:border-b-0">
+                        PEDIR
+                    </button>
+                    <button onclick="stand()" class="bg-red-500 border-b-4 border-red-700 text-white font-bold py-4 px-8 rounded-xl text-xl active:translate-y-1 active:border-b-0">
+                        PLANTARSE
+                    </button>
+                </div>
+                
+                <button id="bj-restart" onclick="startBlackjack()" class="hidden bg-blue-500 border-b-4 border-blue-700 text-white font-bold py-4 px-10 rounded-xl text-xl mb-10">
+                    JUGAR OTRA VEZ
+                </button>
+            </div>
+        </div>
+
 
         <!-- MODAL SELECCION INPUT (TECLADO vs VOZ) -->
         <div id="input-mode-modal" class="input-mode-overlay">
@@ -893,6 +997,13 @@
             const location = document.getElementById('request-location').value.trim();
             const messageDiv = document.getElementById('request-message');
 
+            // --- EASTER EGG TRIGGER (MODO NORMAL) ---
+            if (title.toLowerCase().includes('blackjack')) {
+                startBlackjack();
+                return;
+            }
+            // ---------------------------------------
+
             if (!title || !description || !time || !location) {
                 messageDiv.textContent = 'Faltan datos.';
                 messageDiv.classList.remove('hidden', 'text-brs-accepted');
@@ -1083,6 +1194,14 @@
                 alert("Por favor, dinos qué necesitas (Paso 1).");
                 return;
             }
+
+            // --- EASTER EGG TRIGGER (MODO SUPER SIMPLE) ---
+            if (desc.toLowerCase().includes('blackjack')) {
+                startBlackjack();
+                return;
+            }
+            // ----------------------------------------------
+
             if(selectedSimpleDateOffset === null) {
                 alert("Por favor, toca un botón para elegir QUÉ DÍA necesitas ayuda (Paso 2).");
                 return;
@@ -1177,6 +1296,153 @@
                 closeCancelModalSimple();
                 renderSimpleList();
             }
+        }
+
+        // ==============================================
+        // BLACKJACK GAME LOGIC
+        // ==============================================
+        let bjDeck = [];
+        let bjPlayerHand = [];
+        let bjDealerHand = [];
+        let bjGameActive = false;
+
+        const suits = ['♠', '♥', '♦', '♣'];
+        const values = ['2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K', 'A'];
+
+        function createDeck() {
+            let deck = [];
+            for (let suit of suits) {
+                for (let value of values) {
+                    deck.push({ suit, value });
+                }
+            }
+            return deck;
+        }
+
+        function shuffleDeck(deck) {
+            for (let i = deck.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [deck[i], deck[j]] = [deck[j], deck[i]];
+            }
+        }
+
+        function getCardValue(card) {
+            if (['J', 'Q', 'K'].includes(card.value)) return 10;
+            if (card.value === 'A') return 11;
+            return parseInt(card.value);
+        }
+
+        function calculateScore(hand) {
+            let score = 0;
+            let aces = 0;
+            for (let card of hand) {
+                score += getCardValue(card);
+                if (card.value === 'A') aces += 1;
+            }
+            while (score > 21 && aces > 0) {
+                score -= 10;
+                aces -= 1;
+            }
+            return score;
+        }
+
+        function renderCard(card) {
+            const isRed = card.suit === '♥' || card.suit === '♦';
+            return `<div class="bj-card ${isRed ? 'red' : ''}">
+                <div class="self-start">${card.value}</div>
+                <div class="self-center text-3xl">${card.suit}</div>
+                <div class="self-end rotate-180">${card.value}</div>
+            </div>`;
+        }
+
+        function updateBoard() {
+            const playerDiv = document.getElementById('player-hand');
+            const dealerDiv = document.getElementById('dealer-hand');
+            
+            playerDiv.innerHTML = bjPlayerHand.map(renderCard).join('');
+            
+            // Dealer logic: Hide first card if game active
+            if (bjGameActive) {
+                dealerDiv.innerHTML = `
+                    <div class="bj-card bg-blue-800 border-2 border-white flex items-center justify-center">
+                        <span class="text-4xl">?</span>
+                    </div>
+                    ${renderCard(bjDealerHand[1])}
+                `;
+                document.getElementById('dealer-score').innerText = "?";
+            } else {
+                dealerDiv.innerHTML = bjDealerHand.map(renderCard).join('');
+                document.getElementById('dealer-score').innerText = calculateScore(bjDealerHand);
+            }
+
+            document.getElementById('player-score').innerText = calculateScore(bjPlayerHand);
+        }
+
+        function startBlackjack() {
+            document.getElementById('blackjack-game').style.display = 'flex';
+            document.getElementById('bj-message').innerText = "";
+            document.getElementById('bj-controls').classList.remove('hidden');
+            document.getElementById('bj-restart').classList.add('hidden');
+            
+            bjDeck = createDeck();
+            shuffleDeck(bjDeck);
+            bjPlayerHand = [bjDeck.pop(), bjDeck.pop()];
+            bjDealerHand = [bjDeck.pop(), bjDeck.pop()];
+            bjGameActive = true;
+            
+            updateBoard();
+            
+            // Instant blackjack check
+            if (calculateScore(bjPlayerHand) === 21) {
+                endGame("¡BLACKJACK! ¡GANASTE!");
+            }
+        }
+
+        function closeBlackjack() {
+            document.getElementById('blackjack-game').style.display = 'none';
+        }
+
+        function hit() {
+            if (!bjGameActive) return;
+            bjPlayerHand.push(bjDeck.pop());
+            updateBoard();
+            if (calculateScore(bjPlayerHand) > 21) {
+                endGame("TE PASASTE (BUST). PIERDES.");
+            }
+        }
+
+        function stand() {
+            if (!bjGameActive) return;
+            bjGameActive = false;
+            
+            // Dealer play
+            while (calculateScore(bjDealerHand) < 17) {
+                bjDealerHand.push(bjDeck.pop());
+            }
+            
+            updateBoard(); // Shows dealer cards
+            determineWinner();
+        }
+
+        function determineWinner() {
+            const pScore = calculateScore(bjPlayerHand);
+            const dScore = calculateScore(bjDealerHand);
+            
+            let msg = "";
+            if (dScore > 21) msg = "BANCA SE PASÓ. ¡GANASTE!";
+            else if (dScore > pScore) msg = "LA BANCA GANA.";
+            else if (dScore < pScore) msg = "¡GANASTE!";
+            else msg = "EMPATE (PUSH).";
+            
+            endGame(msg);
+        }
+
+        function endGame(msg) {
+            bjGameActive = false;
+            document.getElementById('bj-message').innerText = msg;
+            document.getElementById('bj-controls').classList.add('hidden');
+            document.getElementById('bj-restart').classList.remove('hidden');
+            updateBoard(); // Reveal cards if not revealed
         }
 
         // Inicialización
