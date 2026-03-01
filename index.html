@@ -9,20 +9,20 @@
     <!-- Carga de Lucide Icons -->
     <script src="https://unpkg.com/lucide@latest"></script>
     <style>
-        /* Configuración de colores personalizada */
+        /* Configuración de colores personalizada - PALETA MONOCROMÁTICA (Blanco y Negro) */
         tailwind.config = {
             theme: {
                 extend: {
                     colors: {
-                        'brs-bg-main': '#00001a',   
-                        'brs-card': '#0f1126',      
-                        'brs-primary': '#eaccad',
-                        'brs-text-main': '#eaccad',
-                        'brs-text-sec': '#94a3b8',
-                        'brs-border': '#1e293b',    
-                        'brs-pending': '#f59e0b',
-                        'brs-accepted': '#10b981',
-                        'brs-danger': '#ef4444',
+                        'brs-bg-main': '#ffffff',   /* Fondo principal blanco */
+                        'brs-card': '#ffffff',      /* Tarjetas blancas */
+                        'brs-primary': '#000000',   /* Negro puro para elementos principales */
+                        'brs-text-main': '#000000', /* Texto principal negro */
+                        'brs-text-sec': '#666666',  /* Gris oscuro para textos secundarios */
+                        'brs-border': '#e5e5e5',    /* Gris muy claro para bordes sutiles */
+                        'brs-pending': '#999999',   /* Gris para pendientes */
+                        'brs-accepted': '#000000',  /* Negro para aceptados */
+                        'brs-danger': '#000000',    /* Negro para peligro/cancelar */
                     },
                     animation: {
                         'pulse-slow': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
@@ -43,20 +43,20 @@
         /* Estilos generales */
         body {
             font-family: 'Inter', sans-serif;
-            background-color: #00001a;
-            color: #eaccad;
+            background-color: #f5f5f5; /* Gris clarito fuera del contenedor en escritorio */
+            color: #000000;
             display: flex;
             justify-content: center;
             min-height: 100vh;
             margin: 0;
-            overflow-x: hidden; /* Evitar scroll horizontal */
+            overflow-x: hidden;
         }
 
         #app-container {
             width: 100%;
             max-width: 420px;
-            background-color: #00001a;
-            box-shadow: 0 0 30px rgba(0, 0, 0, 0.5);
+            background-color: #ffffff;
+            box-shadow: 0 0 40px rgba(0, 0, 0, 0.1);
             display: flex;
             flex-direction: column;
             padding-bottom: 70px;
@@ -65,13 +65,31 @@
         }
 
         /* --- ESTILOS MODO NORMAL --- */
+        #normal-interface {
+            display: none;
+            width: 100%;
+            height: 100%;
+        }
+
+        #landing-interface {
+            display: flex;
+            flex-direction: column;
+            background-color: #ffffff;
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 400;
+        }
+
         #bottom-nav {
             position: fixed;
             bottom: 0;
             width: 100%;
             max-width: 420px;
-            background-color: #00001a;
-            border-top: 1px solid rgba(234, 204, 173, 0.1);
+            background-color: #ffffff;
+            border-top: 1px solid #e5e5e5;
             z-index: 50;
         }
 
@@ -82,12 +100,12 @@
             justify-content: center;
             padding: 10px 4px;
             flex-grow: 1;
-            color: #475569;
-            transition: color 0.3s ease;
+            color: #999999;
+            transition: color 0.3s ease, transform 0.2s ease;
         }
         
         .nav-btn.active-btn {
-            color: #eaccad;
+            color: #000000;
             font-weight: 700;
         }
 
@@ -105,14 +123,15 @@
             padding: 12px;
             margin-bottom: 12px;
             border-radius: 8px;
-            border: 1px solid #1e293b;
-            background-color: #0a0b1e;
-            color: #eaccad;
+            border: 1px solid #cccccc;
+            background-color: #ffffff;
+            color: #000000;
             outline: none;
+            transition: all 0.2s;
         }
         .profile-input:focus {
-            border-color: #eaccad;
-            box-shadow: 0 0 0 1px rgba(234, 204, 173, 0.3);
+            border-color: #000000;
+            box-shadow: 0 0 0 2px rgba(0, 0, 0, 0.1);
         }
         
         .post-profile-pic {
@@ -121,7 +140,7 @@
             border-radius: 50%;
             object-fit: cover;
             cursor: pointer;
-            border: 2px solid #eaccad;
+            border: 2px solid #000000;
         }
 
         .profile-section-button {
@@ -130,37 +149,37 @@
             text-align: center;
             border-bottom: 3px solid transparent;
             cursor: pointer;
-            color: #475569;
+            color: #666666;
             transition: all 0.2s;
         }
         .profile-section-button.active {
-            border-bottom-color: #eaccad;
-            font-weight: 700;
-            color: #eaccad;
+            border-bottom-color: #000000;
+            font-weight: 900;
+            color: #000000;
         }
         
         .modal-content {
-            background-color: #0f1126;
-            border: 1px solid #1e293b;
-            color: #eaccad;
+            background-color: #ffffff;
+            border: 2px solid #000000;
+            color: #000000;
         }
         
         .btn-primary {
-            background-color: #eaccad;
-            color: #00001a; 
+            background-color: #000000;
+            color: #ffffff; 
         }
         .btn-primary:hover {
-            background-color: #dcbfa3;
+            background-color: #333333;
         }
         
-        .badge-pending { background-color: rgba(245, 158, 11, 0.2); color: #f59e0b; }
-        .badge-accepted { background-color: rgba(16, 185, 129, 0.2); color: #10b981; }
+        .badge-pending { background-color: #ffffff; color: #000000; border: 1px dashed #000000; }
+        .badge-accepted { background-color: #000000; color: #ffffff; border: 1px solid #000000; }
 
         /* --- ESTILOS MODO SUPER SIMPLE --- */
         #super-simple-interface {
-            display: none; /* Oculto por defecto */
+            display: none;
             flex-direction: column;
-            background-color: #00001a;
+            background-color: #ffffff;
             position: absolute;
             top: 0;
             left: 0;
@@ -182,8 +201,8 @@
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            transition: transform 0.1s;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+            transition: transform 0.1s, box-shadow 0.2s;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
             text-transform: uppercase;
         }
         
@@ -192,50 +211,58 @@
         }
 
         .simple-btn-help {
-            background-color: #eaccad;
-            color: #00001a;
-            border: 4px solid #eaccad;
+            background-color: #000000;
+            color: #ffffff;
+            border: 4px solid #000000;
         }
 
         .simple-btn-list {
-            background-color: #0f1126;
-            color: #eaccad;
-            border: 4px solid #eaccad;
+            background-color: #ffffff;
+            color: #000000;
+            border: 4px solid #000000;
         }
 
         .simple-header {
             font-size: 22px;
             font-weight: bold;
-            color: #eaccad;
+            color: #000000;
             text-align: center;
             margin-bottom: 20px;
             padding: 10px;
-            border-bottom: 2px solid #333;
+            border-bottom: 2px solid #000000;
         }
 
         .simple-card {
-            background-color: #0f1126;
-            border: 2px solid #eaccad;
+            background-color: #ffffff;
+            border: 3px solid #000000;
             border-radius: 15px;
             padding: 20px;
             margin-bottom: 20px;
+            box-shadow: 4px 4px 0px rgba(0,0,0,1); /* Estilo brutalista/monocromo */
         }
 
         .simple-input-area {
             width: 100%;
             min-height: 80px;
-            background-color: #1e293b;
-            color: white;
+            background-color: #f5f5f5;
+            color: #000000;
             font-size: 24px;
             padding: 15px;
             border-radius: 10px;
-            border: 2px solid #eaccad;
+            border: 2px solid #000000;
             margin-bottom: 20px;
             cursor: pointer;
-            color-scheme: dark;
+            color-scheme: light;
+            transition: border-color 0.2s;
+        }
+        
+        .simple-input-area:focus {
+            border-color: #000000;
+            background-color: #ffffff;
+            outline: none;
+            box-shadow: 4px 4px 0px rgba(0,0,0,1);
         }
 
-        /* Estilos nuevos para los botones de selección (Toggle Buttons) */
         .simple-toggle-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -244,9 +271,9 @@
         }
 
         .simple-toggle-btn {
-            background-color: #0f1126;
-            border: 3px solid #334155;
-            color: #94a3b8;
+            background-color: #ffffff;
+            border: 3px solid #cccccc;
+            color: #666666;
             padding: 20px 10px;
             border-radius: 15px;
             font-size: 18px;
@@ -259,24 +286,22 @@
             justify-content: center;
         }
 
-        /* Estado seleccionado */
         .simple-toggle-btn.selected {
-            background-color: #eaccad;
-            color: #00001a;
-            border-color: #eaccad;
-            transform: scale(1.05);
-            box-shadow: 0 0 15px rgba(234, 204, 173, 0.3);
+            background-color: #000000;
+            color: #ffffff;
+            border-color: #000000;
+            transform: scale(1.03);
+            box-shadow: 4px 4px 0px rgba(0, 0, 0, 1);
         }
 
         .simple-toggle-btn.full-width {
             grid-column: span 2;
         }
 
-        /* Input mode modal overlay */
         .input-mode-overlay {
             position: fixed;
             top: 0; left: 0; right: 0; bottom: 0;
-            background: rgba(0,0,0,0.95);
+            background: rgba(0, 0, 0, 0.95);
             z-index: 200;
             display: none;
             flex-direction: column;
@@ -285,24 +310,25 @@
             padding: 20px;
         }
 
-        /* --- BLACKJACK EASTER EGG STYLES --- */
+        /* --- BLACKJACK EASTER EGG STYLES (MONOCROMO) --- */
         #blackjack-game {
             display: none;
             position: fixed;
             top: 0; left: 0; right: 0; bottom: 0;
-            background-color: #0f3d0f; /* Verde tapete */
+            background-color: #e5e5e5; 
             z-index: 300;
             flex-direction: column;
             align-items: center;
-            background-image: radial-gradient(circle, #1a5c1a 0%, #052405 100%);
-            border: 8px solid #3e2723; /* Borde madera */
+            background-image: radial-gradient(circle, #ffffff 0%, #cccccc 100%);
+            border: 8px solid #000000;
         }
 
         .bj-card {
-            background-color: white;
-            color: black;
+            background-color: #ffffff;
+            color: #000000;
             width: 70px;
             height: 100px;
+            border: 2px solid #000000;
             border-radius: 8px;
             display: flex;
             flex-direction: column;
@@ -311,11 +337,12 @@
             margin: 5px;
             font-weight: bold;
             font-size: 18px;
-            box-shadow: 2px 2px 5px rgba(0,0,0,0.5);
+            box-shadow: 2px 2px 0px rgba(0,0,0,1);
             animation: bounceIn 0.5s;
         }
 
-        .bj-card.red { color: #d00; }
+        /* Las cartas rojas las ponemos en gris oscuro para distinguirlas, ya que solo usamos blanco y negro */
+        .bj-card.red { color: #666666; }
         
         .hand-area {
             display: flex;
@@ -326,12 +353,17 @@
         }
 
         .bj-score-box {
-            background: rgba(0,0,0,0.5);
+            background: #000000;
             padding: 5px 15px;
             border-radius: 20px;
-            color: white;
+            color: #ffffff;
             font-weight: bold;
             margin-bottom: 10px;
+        }
+
+        /* Estilo para convertir a escala de grises forzada (si se requiere) */
+        .grayscale-logo {
+            filter: grayscale(100%);
         }
 
     </style>
@@ -340,62 +372,81 @@
 
     <div id="app-container">
 
+        <!-- MODO INICIO / LANDING -->
+        <div id="landing-interface" class="flex flex-col items-center justify-center p-6">
+            <img src="https://i.imgur.com/XGtcCCC.png" alt="Logo Kairós" class="h-40 w-40 mb-8 object-cover rounded-3xl border-4 border-black grayscale-logo shadow-[8px_8px_0px_rgba(0,0,0,1)]">
+            <h1 class="text-4xl font-black text-black tracking-widest uppercase mb-2 text-center">KAIRÓS</h1>
+            <p class="text-lg font-bold text-gray-500 mb-12 text-center uppercase">Banco de horas social</p>
+
+            <div class="w-full max-w-xs space-y-6">
+                <button onclick="enterSimpleMode()" class="w-full bg-black text-white border-4 border-black font-black py-6 rounded-2xl text-2xl active:scale-95 transition flex flex-col items-center justify-center shadow-[6px_6px_0px_rgba(150,150,150,1)]">
+                    <i data-lucide="zap" class="w-10 h-10 mb-2"></i> MODO FÁCIL
+                </button>
+                <button onclick="enterNormalMode()" class="w-full bg-white text-black border-4 border-black font-black py-6 rounded-2xl text-2xl active:scale-95 transition flex flex-col items-center justify-center shadow-[6px_6px_0px_rgba(0,0,0,1)]">
+                    <i data-lucide="layout-grid" class="w-10 h-10 mb-2"></i> MODO NORMAL
+                </button>
+            </div>
+        </div>
+
         <!-- MODO NORMAL (Contenedor Wrapper) -->
         <div id="normal-interface">
             <!-- Cabecera -->
-            <header class="p-4 border-b border-white/5 sticky top-0 z-40 backdrop-blur-md bg-opacity-90 bg-brs-bg-main shadow-lg flex justify-between items-center">
-                <h1 class="text-2xl font-black text-brs-primary tracking-widest uppercase" id="app-name">KAIRÓS</h1>
-                <!-- Botón de Modo Simple -->
-                <button onclick="toggleSimpleMode()" class="bg-brs-card border border-brs-primary text-brs-primary px-3 py-1 rounded-lg text-xs font-bold shadow-md hover:bg-white/10 transition">
-                    MODO SUPERSIMPLE
+            <header class="p-4 border-b border-brs-border sticky top-0 z-40 backdrop-blur-md bg-opacity-90 bg-brs-bg-main flex justify-between items-center">
+                <div class="flex items-center space-x-3">
+                    <img src="https://i.imgur.com/XGtcCCC.png" alt="Logo Kairós" class="h-8 w-8 object-cover rounded-lg border border-black grayscale-logo">
+                    <h1 class="text-2xl font-black text-brs-primary tracking-widest uppercase" id="app-name">KAIRÓS</h1>
+                </div>
+                <!-- Botón de Cambiar Modo -->
+                <button onclick="showLanding()" class="bg-white border-2 border-black text-black px-3 py-1 rounded-lg text-xs font-bold hover:bg-black hover:text-white transition">
+                    CAMBIAR MODO
                 </button>
             </header>
 
             <!-- 1. Menú Principal -->
             <div id="home-menu" class="menu-page">
-                <h2 class="text-2xl font-bold mb-6 text-brs-primary w-full text-left">Oportunidades de Ayuda</h2>
+                <h2 class="text-2xl font-bold mb-6 text-brs-text-main w-full text-left">Oportunidades de Ayuda</h2>
 
                 <div id="requests-list" class="space-y-5 w-full pb-8">
                     <!-- Tarjeta 1 -->
-                    <div class="p-5 bg-brs-card rounded-xl shadow-lg border border-white/5">
+                    <div class="p-5 bg-brs-card rounded-xl border-2 border-black">
                         <div class="flex items-center justify-between mb-3">
                             <div class="flex items-center space-x-3">
-                                <img src="https://placehold.co/40x40/00001a/eaccad?text=M" alt="Foto" class="post-profile-pic" data-user-id="manuel">
-                                <h3 class="text-lg font-bold text-brs-primary">Ayuda a Manuel</h3>
+                                <img src="https://placehold.co/40x40/f5f5f5/000000?text=M" alt="Foto" class="post-profile-pic" data-user-id="manuel">
+                                <h3 class="text-lg font-bold text-brs-text-main">Ayuda a Manuel</h3>
                             </div>
-                            <span class="text-xs font-medium text-brs-text-sec bg-white/5 px-2 py-1 rounded-full">Hace 1h</span>
+                            <span class="text-xs font-bold text-black border border-black px-3 py-1 rounded-full">Hace 1h</span>
                         </div>
 
                         <p class="text-brs-text-sec mb-4 text-sm leading-relaxed">Necesito a alguien que me acompañe a hacer la compra semanal y cargar las bolsas pesadas.</p>
 
-                        <div class="text-xs text-brs-text-sec space-y-2 mb-5 pl-3 border-l-2 border-brs-primary/50">
-                            <p class="flex items-center"><i data-lucide="clock" class="w-4 h-4 mr-2 text-brs-primary"></i>Miércoles, 10:00 - 12:00</p>
-                            <p class="flex items-center"><i data-lucide="map-pin" class="w-4 h-4 mr-2 text-brs-primary"></i>Madrid, Barrio Salamanca</p>
+                        <div class="text-xs text-black font-medium space-y-2 mb-5 pl-3 border-l-4 border-black">
+                            <p class="flex items-center"><i data-lucide="clock" class="w-4 h-4 mr-2"></i>Miércoles, 10:00 - 12:00</p>
+                            <p class="flex items-center"><i data-lucide="map-pin" class="w-4 h-4 mr-2"></i>Madrid, Barrio Salamanca</p>
                         </div>
 
-                        <button onclick="acceptTask('manuel_purchase')" class="w-full btn-primary font-bold py-3 rounded-lg transition duration-200 shadow-md flex justify-center items-center hover:shadow-lg hover:scale-[1.01] transform">
+                        <button onclick="acceptTask('manuel_purchase')" class="w-full btn-primary font-bold py-3 rounded-lg transition duration-200 flex justify-center items-center hover:scale-[1.01] transform">
                             <i data-lucide="hand-heart" class="w-5 h-5 mr-2"></i>Ofrecer Ayuda
                         </button>
                     </div>
 
                     <!-- Tarjeta 2 -->
-                    <div class="p-5 bg-brs-card rounded-xl shadow-lg border border-white/5">
+                    <div class="p-5 bg-brs-card rounded-xl border-2 border-black">
                         <div class="flex items-center justify-between mb-3">
                             <div class="flex items-center space-x-3">
-                                <img src="https://placehold.co/40x40/333333/eaccad?text=MR" alt="Foto" class="post-profile-pic" data-user-id="maribel">
-                                <h3 class="text-lg font-bold text-brs-primary">Paseo con Maribel</h3>
+                                <img src="https://placehold.co/40x40/f5f5f5/000000?text=MR" alt="Foto" class="post-profile-pic" data-user-id="maribel">
+                                <h3 class="text-lg font-bold text-brs-text-main">Paseo con Maribel</h3>
                             </div>
-                            <span class="text-xs font-medium text-brs-text-sec bg-white/5 px-2 py-1 rounded-full">Hace 3h</span>
+                            <span class="text-xs font-bold text-black border border-black px-3 py-1 rounded-full">Hace 3h</span>
                         </div>
 
                         <p class="text-brs-text-sec mb-4 text-sm leading-relaxed">Busco compañía para dar un paseo diario por el parque y charlar un rato.</p>
 
-                        <div class="text-xs text-brs-text-sec space-y-2 mb-5 pl-3 border-l-2 border-brs-primary/50">
-                            <p class="flex items-center"><i data-lucide="clock" class="w-4 h-4 mr-2 text-brs-primary"></i>Lun, Jue, Vie 17:00</p>
-                            <p class="flex items-center"><i data-lucide="map-pin" class="w-4 h-4 mr-2 text-brs-primary"></i>Sevilla, Triana</p>
+                        <div class="text-xs text-black font-medium space-y-2 mb-5 pl-3 border-l-4 border-black">
+                            <p class="flex items-center"><i data-lucide="clock" class="w-4 h-4 mr-2"></i>Lun, Jue, Vie 17:00</p>
+                            <p class="flex items-center"><i data-lucide="map-pin" class="w-4 h-4 mr-2"></i>Sevilla, Triana</p>
                         </div>
 
-                        <button onclick="acceptTask('maribel_walk')" class="w-full btn-primary font-bold py-3 rounded-lg transition duration-200 shadow-md flex justify-center items-center hover:shadow-lg hover:scale-[1.01] transform">
+                        <button onclick="acceptTask('maribel_walk')" class="w-full btn-primary font-bold py-3 rounded-lg transition duration-200 flex justify-center items-center hover:scale-[1.01] transform">
                             <i data-lucide="hand-heart" class="w-5 h-5 mr-2"></i>Ofrecer Ayuda
                         </button>
                     </div>
@@ -404,30 +455,30 @@
 
             <!-- 2. Menú de Solicitud (Normal) -->
             <div id="request-menu" class="menu-page">
-                <h2 class="text-2xl font-bold mb-6 text-brs-primary text-center">Solicitar Tiempo</h2>
+                <h2 class="text-2xl font-bold mb-6 text-brs-text-main text-center">Solicitar Tiempo</h2>
 
-                <form id="new-request-form" class="space-y-5 p-6 bg-brs-card rounded-xl shadow-lg border border-white/5 w-full max-w-sm text-left">
+                <form id="new-request-form" class="space-y-5 p-6 bg-brs-card rounded-xl border-2 border-black w-full max-w-sm text-left">
                     <div class="flex flex-col">
-                        <label for="request-title" class="mb-2 text-sm font-bold text-brs-primary">Título</label>
+                        <label for="request-title" class="mb-2 text-sm font-bold text-brs-text-main">Título</label>
                         <input type="text" id="request-title" class="profile-input" placeholder="Ej: Ir al médico">
                     </div>
 
                     <div class="flex flex-col">
-                        <label for="request-description" class="mb-2 text-sm font-bold text-brs-primary">Descripción</label>
+                        <label for="request-description" class="mb-2 text-sm font-bold text-brs-text-main">Descripción</label>
                         <textarea id="request-description" class="profile-input h-24 resize-none" placeholder="¿Qué necesitas?"></textarea>
                     </div>
 
                     <div class="flex flex-col">
-                        <label for="request-time" class="mb-2 text-sm font-bold text-brs-primary">Horario</label>
+                        <label for="request-time" class="mb-2 text-sm font-bold text-brs-text-main">Horario</label>
                         <input type="text" id="request-time" class="profile-input" placeholder="Ej: Mañana 9:30h">
                     </div>
 
                     <div class="flex flex-col">
-                        <label for="request-location" class="mb-2 text-sm font-bold text-brs-primary">Ubicación</label>
+                        <label for="request-location" class="mb-2 text-sm font-bold text-brs-text-main">Ubicación</label>
                         <input type="text" id="request-location" class="profile-input" placeholder="Ej: Centro">
                     </div>
 
-                    <button type="button" onclick="submitRequest()" class="w-full btn-primary font-bold py-3 rounded-lg transition duration-200 shadow-md flex justify-center items-center hover:shadow-lg">
+                    <button type="button" onclick="submitRequest()" class="w-full btn-primary font-bold py-3 rounded-lg transition duration-200 flex justify-center items-center">
                         <i data-lucide="send" class="w-5 h-5 mr-2"></i> Publicar
                     </button>
 
@@ -466,14 +517,15 @@
         <!-- ============================================== -->
         <div id="super-simple-interface">
             <div class="w-full flex justify-end mb-4">
-                 <button onclick="toggleSimpleMode()" class="text-xs text-brs-text-sec underline p-2">
-                    Volver a modo normal
+                 <button onclick="showLanding()" class="text-xs font-bold text-black border border-black rounded px-3 py-1 hover:bg-black hover:text-white transition">
+                    CAMBIAR MODO
                 </button>
             </div>
 
             <!-- HOME SIMPLE -->
             <div id="simple-home-view" class="w-full h-full flex flex-col justify-center pb-20">
-                <h2 class="text-3xl font-black text-center text-brs-primary mb-8">¿QUÉ NECESITAS?</h2>
+                <img src="https://i.imgur.com/XGtcCCC.png" alt="Logo Kairós" class="h-24 w-24 mx-auto mb-6 object-cover rounded-2xl border-4 border-black grayscale-logo">
+                <h2 class="text-3xl font-black text-center text-brs-text-main mb-8">¿QUÉ NECESITAS?</h2>
                 
                 <button onclick="showSimpleView('simple-ask-view')" class="simple-btn-large simple-btn-help">
                     <i data-lucide="hand-helping" class="w-12 h-12 mb-2"></i>
@@ -488,20 +540,20 @@
 
             <!-- PEDIR AYUDA SIMPLE -->
             <div id="simple-ask-view" class="hidden w-full h-full flex-col pt-4 pb-20">
-                <button onclick="showSimpleView('simple-home-view')" class="self-start text-brs-primary font-bold mb-4 flex items-center text-xl">
-                    <i data-lucide="arrow-left" class="w-8 h-8 mr-2"></i> ATRÁS
+                <button onclick="showSimpleView('simple-home-view')" class="self-start text-black font-bold mb-4 flex items-center text-xl bg-white border-2 border-black px-4 py-2 rounded-xl">
+                    <i data-lucide="arrow-left" class="w-6 h-6 mr-2"></i> ATRÁS
                 </button>
 
                 <!-- PASO 1: QUÉ -->
                 <div class="simple-header">1. ¿QUÉ NECESITAS?</div>
                 
                 <div class="relative w-full mb-6">
-                    <div id="simple-input-placeholder" onclick="openInputModeSelector()" class="simple-input-area flex items-center justify-center text-center text-gray-400" style="min-height: 120px;">
+                    <div id="simple-input-placeholder" onclick="openInputModeSelector()" class="simple-input-area flex items-center justify-center text-center text-gray-500 font-bold" style="min-height: 120px;">
                         Pulsa aquí para escribir o hablar...
                     </div>
                     <textarea id="simple-text-area" class="simple-input-area hidden focus:outline-none focus:border-brs-primary text-2xl" placeholder="Escribe aquí..." style="min-height: 120px;"></textarea>
                     
-                    <div id="mic-indicator" class="hidden absolute bottom-4 right-4 text-red-500 animate-pulse">
+                    <div id="mic-indicator" class="hidden absolute bottom-4 right-4 text-black animate-pulse">
                         <i data-lucide="mic" class="w-8 h-8"></i>
                     </div>
                 </div>
@@ -516,10 +568,10 @@
                         <i data-lucide="sun" class="w-8 h-8 mb-2"></i> MAÑANA
                     </button>
                     <button type="button" class="simple-toggle-btn" onclick="selectSimpleDate(2, this)">
-                        <span class="text-3xl font-bold mb-1">2</span> DÍAS
+                        <span class="text-3xl font-black mb-1">2</span> DÍAS
                     </button>
                     <button type="button" class="simple-toggle-btn" onclick="selectSimpleDate(3, this)">
-                        <span class="text-3xl font-bold mb-1">3</span> DÍAS
+                        <span class="text-3xl font-black mb-1">3</span> DÍAS
                     </button>
                 </div>
 
@@ -539,43 +591,43 @@
                     </button>
                 </div>
 
-                <button onclick="showSimpleSummary()" class="simple-btn-large simple-btn-help mt-8 mb-10" style="height: 100px; font-size: 24px; background-color: #10b981; border-color: #10b981; color: white;">
+                <button onclick="showSimpleSummary()" class="simple-btn-large simple-btn-help mt-8 mb-10" style="height: 100px; font-size: 24px; background-color: #000; border-color: #000; color: white;">
                     CONTINUAR
                 </button>
             </div>
 
             <!-- RESUMEN / CONFIRMACIÓN SIMPLE -->
             <div id="simple-summary-view" class="hidden w-full h-full flex-col pt-4 pb-20 items-center">
-                <button onclick="showSimpleView('simple-ask-view')" class="self-start text-brs-primary font-bold mb-4 flex items-center text-xl">
-                    <i data-lucide="arrow-left" class="w-8 h-8 mr-2"></i> CORREGIR
+                <button onclick="showSimpleView('simple-ask-view')" class="self-start text-black font-bold mb-4 flex items-center text-xl bg-white border-2 border-black px-4 py-2 rounded-xl">
+                    <i data-lucide="arrow-left" class="w-6 h-6 mr-2"></i> CORREGIR
                 </button>
 
-                <div class="simple-header">CONFIRMAR SOLICITUD</div>
+                <div class="simple-header w-full">CONFIRMAR SOLICITUD</div>
                 
-                <div class="bg-brs-card p-6 rounded-2xl border-2 border-brs-primary w-full text-center mb-6">
-                    <p class="text-lg text-brs-text-sec mb-2">Vas a pedir ayuda para:</p>
-                    <p id="summary-desc" class="text-2xl font-bold text-white mb-6 italic">"..."</p>
+                <div class="bg-brs-card p-6 rounded-2xl border-4 border-black w-full text-center mb-6">
+                    <p class="text-lg font-bold text-gray-500 mb-2 uppercase">Vas a pedir ayuda para:</p>
+                    <p id="summary-desc" class="text-2xl font-black text-black mb-6">"..."</p>
                     
-                    <p class="text-lg text-brs-text-sec mb-2">El día:</p>
-                    <p id="summary-date" class="text-2xl font-bold text-brs-primary mb-6">...</p>
+                    <p class="text-lg font-bold text-gray-500 mb-2 uppercase">El día:</p>
+                    <p id="summary-date" class="text-2xl font-black text-black mb-6">...</p>
 
-                    <p class="text-lg text-brs-text-sec mb-2">A las:</p>
+                    <p class="text-lg font-bold text-gray-500 mb-2 uppercase">A las:</p>
                     <!-- Selector de Hora Editable -->
-                    <div class="relative inline-block">
-                        <input type="time" id="summary-time-input" class="bg-gray-800 text-white text-4xl font-bold p-4 rounded-xl border-2 border-brs-primary text-center w-full" style="color-scheme: dark;">
-                        <p class="text-xs text-brs-text-sec mt-2">(Toca la hora para cambiarla si quieres)</p>
+                    <div class="relative inline-block w-full">
+                        <input type="time" id="summary-time-input" class="bg-gray-100 text-black text-4xl font-black p-4 rounded-xl border-4 border-black text-center w-full" style="color-scheme: light;">
+                        <p class="text-xs font-bold text-gray-500 mt-2">(Toca la hora para cambiarla)</p>
                     </div>
                 </div>
 
-                <button onclick="confirmSimpleSubmission()" class="simple-btn-large simple-btn-help" style="height: 100px; font-size: 24px; background-color: #10b981; border-color: #10b981; color: white;">
+                <button onclick="confirmSimpleSubmission()" class="simple-btn-large simple-btn-help" style="height: 100px; font-size: 24px; background-color: #000; color: white; border: 4px solid #000;">
                     CONFIRMAR Y ENVIAR
                 </button>
             </div>
 
             <!-- MIS SOLICITUDES SIMPLE -->
             <div id="simple-list-view" class="hidden w-full h-full flex-col pt-4">
-                <button onclick="showSimpleView('simple-home-view')" class="self-start text-brs-primary font-bold mb-4 flex items-center text-xl">
-                    <i data-lucide="arrow-left" class="w-8 h-8 mr-2"></i> ATRÁS
+                <button onclick="showSimpleView('simple-home-view')" class="self-start text-black font-bold mb-4 flex items-center text-xl bg-white border-2 border-black px-4 py-2 rounded-xl">
+                    <i data-lucide="arrow-left" class="w-6 h-6 mr-2"></i> ATRÁS
                 </button>
                 <div class="simple-header">MIS COSAS PENDIENTES</div>
                 <div id="simple-tasks-container" class="pb-10">
@@ -588,15 +640,15 @@
         <!-- BLACKJACK EASTER EGG OVERLAY -->
         <!-- ============================================== -->
         <div id="blackjack-game">
-            <div class="w-full flex justify-between p-4 items-center bg-black/30 w-full mb-4">
-                <h2 class="text-2xl font-bold text-white">CASINO KAIRÓS ♠️♥️</h2>
-                <button onclick="closeBlackjack()" class="text-white font-bold bg-red-600 px-3 py-1 rounded">SALIR</button>
+            <div class="w-full flex justify-between p-4 items-center bg-black w-full mb-4 border-b-4 border-white">
+                <h2 class="text-2xl font-black text-white tracking-widest">CASINO KAIRÓS</h2>
+                <button onclick="closeBlackjack()" class="text-black font-bold bg-white px-4 py-1 rounded border-2 border-black">SALIR</button>
             </div>
 
             <!-- Dealer Area -->
             <div class="flex flex-col items-center w-full mb-8">
-                <h3 class="text-white font-bold mb-2">BANCA</h3>
-                <div class="bj-score-box" id="dealer-score">0</div>
+                <h3 class="text-black font-black mb-2 text-xl">BANCA</h3>
+                <div class="bj-score-box border-2 border-white" id="dealer-score">0</div>
                 <div id="dealer-hand" class="hand-area">
                     <!-- Cartas dealer -->
                 </div>
@@ -604,25 +656,25 @@
 
             <!-- Player Area -->
             <div class="flex flex-col items-center w-full flex-grow">
-                <h3 class="text-white font-bold mb-2">TÚ</h3>
-                <div class="bj-score-box" id="player-score">0</div>
+                <h3 class="text-black font-black mb-2 text-xl">TÚ</h3>
+                <div class="bj-score-box border-2 border-white" id="player-score">0</div>
                 <div id="player-hand" class="hand-area">
                     <!-- Cartas jugador -->
                 </div>
                 
-                <div id="bj-message" class="text-2xl font-black text-yellow-400 mb-6 h-8 text-center px-4"></div>
+                <div id="bj-message" class="text-2xl font-black text-black mb-6 h-8 text-center px-4 uppercase bg-white px-4 py-1 rounded"></div>
 
                 <!-- Controls -->
                 <div id="bj-controls" class="flex space-x-4 mb-10">
-                    <button onclick="hit()" class="bg-green-500 border-b-4 border-green-700 text-white font-bold py-4 px-8 rounded-xl text-xl active:translate-y-1 active:border-b-0">
+                    <button onclick="hit()" class="bg-black text-white border-4 border-white font-black py-4 px-8 rounded-xl text-xl active:scale-95 transition">
                         PEDIR
                     </button>
-                    <button onclick="stand()" class="bg-red-500 border-b-4 border-red-700 text-white font-bold py-4 px-8 rounded-xl text-xl active:translate-y-1 active:border-b-0">
+                    <button onclick="stand()" class="bg-white text-black border-4 border-black font-black py-4 px-8 rounded-xl text-xl active:scale-95 transition">
                         PLANTARSE
                     </button>
                 </div>
                 
-                <button id="bj-restart" onclick="startBlackjack()" class="hidden bg-blue-500 border-b-4 border-blue-700 text-white font-bold py-4 px-10 rounded-xl text-xl mb-10">
+                <button id="bj-restart" onclick="startBlackjack()" class="hidden bg-black text-white border-4 border-white font-black py-4 px-10 rounded-xl text-xl mb-10">
                     JUGAR OTRA VEZ
                 </button>
             </div>
@@ -631,69 +683,72 @@
 
         <!-- MODAL SELECCION INPUT (TECLADO vs VOZ) -->
         <div id="input-mode-modal" class="input-mode-overlay">
-            <h3 class="text-3xl font-bold text-white mb-10 text-center">¿Cómo quieres escribir?</h3>
+            <h3 class="text-3xl font-black text-white mb-10 text-center">¿Cómo quieres escribir?</h3>
             
-            <button onclick="selectInputMode('keyboard')" class="bg-blue-600 text-white w-full max-w-xs p-8 rounded-2xl mb-6 flex flex-col items-center shadow-lg border-2 border-white">
+            <button onclick="selectInputMode('keyboard')" class="bg-white text-black w-full max-w-xs p-8 rounded-2xl mb-6 flex flex-col items-center border-4 border-black box-shadow-solid">
                 <i data-lucide="keyboard" class="w-16 h-16 mb-4"></i>
-                <span class="text-2xl font-bold">TECLADO</span>
+                <span class="text-2xl font-black">TECLADO</span>
             </button>
 
-            <button onclick="selectInputMode('voice')" class="bg-red-500 text-white w-full max-w-xs p-8 rounded-2xl flex flex-col items-center shadow-lg border-2 border-white">
+            <button onclick="selectInputMode('voice')" class="bg-black text-white w-full max-w-xs p-8 rounded-2xl flex flex-col items-center border-4 border-white">
                 <i data-lucide="mic" class="w-16 h-16 mb-4"></i>
-                <span class="text-2xl font-bold">HABLAR (DICTAR)</span>
+                <span class="text-2xl font-black">HABLAR (DICTAR)</span>
             </button>
             
-            <button onclick="closeInputModeSelector()" class="mt-10 text-white underline text-xl">Cancelar</button>
+            <button onclick="closeInputModeSelector()" class="mt-10 text-white font-bold underline text-xl hover:text-gray-300">Cancelar</button>
         </div>
 
         <!-- MODAL CONFIRMACION CANCELAR (SIMPLE) -->
-        <div id="simple-cancel-modal" class="input-mode-overlay" style="background: rgba(50,0,0,0.95);">
-            <i data-lucide="alert-triangle" class="w-20 h-20 text-yellow-500 mb-6"></i>
-            <h3 class="text-3xl font-bold text-white mb-4 text-center">¡CUIDADO!</h3>
-            <p class="text-xl text-white text-center mb-8 px-4">Estás a punto de cancelar la ayuda. ¿Estás seguro de que ya no la necesitas?</p>
-            
-            <div class="flex flex-col w-full max-w-xs space-y-4">
-                <button onclick="confirmCancelSimple()" class="bg-red-600 text-white p-6 rounded-xl text-xl font-bold shadow-lg border-2 border-white">
-                    SÍ, CANCELAR AYUDA
-                </button>
-                <button onclick="closeCancelModalSimple()" class="bg-green-600 text-white p-6 rounded-xl text-xl font-bold shadow-lg border-2 border-white">
-                    NO, MANTENERLA
-                </button>
+        <div id="simple-cancel-modal" class="input-mode-overlay">
+            <div class="bg-white p-8 rounded-3xl border-8 border-black max-w-sm w-full flex flex-col items-center text-center">
+                <i data-lucide="alert-triangle" class="w-20 h-20 text-black mb-6"></i>
+                <h3 class="text-3xl font-black text-black mb-4">¡CUIDADO!</h3>
+                <p class="text-xl font-bold text-gray-600 mb-8">Estás a punto de cancelar la ayuda. ¿Seguro que ya no la necesitas?</p>
+                
+                <div class="flex flex-col w-full space-y-4">
+                    <button onclick="confirmCancelSimple()" class="bg-black text-white p-6 rounded-xl text-xl font-black border-4 border-black">
+                        SÍ, CANCELAR AYUDA
+                    </button>
+                    <button onclick="closeCancelModalSimple()" class="bg-white text-black p-6 rounded-xl text-xl font-black border-4 border-black">
+                        NO, MANTENERLA
+                    </button>
+                </div>
             </div>
         </div>
 
         <!-- MODAL OK (FEEDBACK FINAL) -->
-        <div id="simple-success-modal" class="input-mode-overlay" style="background: rgba(0,20,0,0.95);">
+        <div id="simple-success-modal" class="input-mode-overlay" style="background: rgba(255, 255, 255, 0.98);">
              <div class="flex flex-col items-center justify-center h-full animate-pulse">
-                <i data-lucide="check-circle" class="w-32 h-32 text-green-500 mb-6"></i>
-                <h2 class="text-3xl font-black text-brs-primary text-center">¡SOLICITUD ENVIADA!</h2>
-                <p class="text-xl text-center mt-4 text-white px-4">Alguien te ayudará pronto.</p>
+                <img src="https://i.imgur.com/XGtcCCC.png" alt="Logo Kairós" class="h-24 w-24 mb-6 object-cover rounded-2xl border-4 border-black grayscale-logo">
+                <i data-lucide="check-circle" class="w-24 h-24 text-black mb-4"></i>
+                <h2 class="text-4xl font-black text-black text-center">¡ENVIADA!</h2>
+                <p class="text-2xl font-bold text-center mt-4 text-gray-600 px-4">Alguien te ayudará pronto.</p>
             </div>
         </div>
 
 
         <!-- MODAL Editar Perfil (NORMAL) -->
         <div id="edit-profile-modal" class="fixed inset-0 bg-black bg-opacity-80 z-50 hidden items-center justify-center p-4 backdrop-blur-sm">
-            <div class="bg-brs-card modal-content p-6 rounded-xl w-full max-w-sm shadow-2xl">
-                <h3 class="text-xl font-bold mb-4 text-brs-primary">Editar Perfil</h3>
+            <div class="bg-brs-card modal-content p-6 rounded-xl w-full max-w-sm">
+                <h3 class="text-xl font-black mb-4 text-brs-text-main">Editar Perfil</h3>
                 <form id="edit-profile-form" class="space-y-4">
                     <label class="block">
-                        <span class="text-sm font-bold text-brs-primary mb-1 block">Nombre</span>
+                        <span class="text-sm font-bold text-brs-text-main mb-1 block">Nombre</span>
                         <input type="text" id="edit-name" class="profile-input" required>
                     </label>
                     <label class="block">
-                        <span class="text-sm font-bold text-brs-primary mb-1 block">Usuario</span>
+                        <span class="text-sm font-bold text-brs-text-main mb-1 block">Usuario</span>
                         <input type="text" id="edit-username" class="profile-input" required>
                     </label>
                     <label class="block">
-                        <span class="text-sm font-bold text-brs-primary mb-1 block">Edad</span>
+                        <span class="text-sm font-bold text-brs-text-main mb-1 block">Edad</span>
                         <input type="number" id="edit-age" class="profile-input" min="18" max="100" required>
                     </label>
                     <div class="flex justify-end space-x-3 mt-6">
-                        <button type="button" onclick="closeEditModal()" class="px-4 py-2 text-sm font-bold text-brs-text-sec bg-white/10 rounded-lg hover:bg-white/20">
+                        <button type="button" onclick="closeEditModal()" class="px-4 py-2 text-sm font-bold text-black border-2 border-black rounded-lg hover:bg-gray-100 transition">
                             Cancelar
                         </button>
-                        <button type="submit" class="px-4 py-2 text-sm font-bold btn-primary rounded-lg shadow-md">
+                        <button type="submit" class="px-4 py-2 text-sm font-bold btn-primary border-2 border-black rounded-lg">
                             Guardar
                         </button>
                     </div>
@@ -703,14 +758,14 @@
 
         <!-- MODAL MENSAJES (GENÉRICO) -->
         <div id="message-modal" class="fixed inset-0 bg-black bg-opacity-80 z-50 hidden items-center justify-center p-4 backdrop-blur-sm">
-            <div class="bg-brs-card modal-content p-6 rounded-xl w-full max-w-xs shadow-2xl text-center">
-                <div class="mb-4 text-brs-primary flex justify-center">
-                    <i data-lucide="info" class="w-12 h-12"></i>
+            <div class="bg-brs-card modal-content p-6 rounded-xl w-full max-w-xs text-center border-4 border-black shadow-[8px_8px_0px_rgba(255,255,255,1)]">
+                <div class="mb-5 flex justify-center">
+                    <img src="https://i.imgur.com/XGtcCCC.png" alt="Logo Kairós" class="h-20 w-20 object-cover rounded-xl border-2 border-black grayscale-logo">
                 </div>
-                <h3 id="modal-title" class="text-xl font-bold mb-2 text-brs-primary"></h3>
-                <p id="modal-body" class="mb-6 text-brs-text-sec"></p>
-                <button onclick="closeMessageModal()" class="px-6 py-2 text-sm font-bold btn-primary rounded-lg shadow-md w-full">
-                    Entendido
+                <h3 id="modal-title" class="text-2xl font-black mb-2 text-brs-text-main"></h3>
+                <p id="modal-body" class="mb-6 font-bold text-brs-text-sec"></p>
+                <button onclick="closeMessageModal()" class="px-6 py-3 text-lg font-black btn-primary rounded-lg w-full border-2 border-black">
+                    ENTENDIDO
                 </button>
             </div>
         </div>
@@ -725,7 +780,7 @@
             name: 'Elena Torres',
             username: 'elena_help',
             age: 28,
-            profilePic: 'https://placehold.co/100x100/00001a/eaccad?text=E',
+            profilePic: 'https://placehold.co/100x100/f5f5f5/000000?text=E',
             hoursGained: 4,
             tasksCompleted: 2,
         };
@@ -737,7 +792,7 @@
                 name: 'Manuel Soria',
                 username: 'manusoria',
                 age: 75,
-                profilePic: 'https://placehold.co/100x100/00001a/eaccad?text=M',
+                profilePic: 'https://placehold.co/100x100/f5f5f5/000000?text=M',
                 tasksCompleted: 8,
                 tasksRequested: 15,
                 reviews: [
@@ -750,7 +805,7 @@
                 name: 'Maribel Rivas',
                 username: 'mari_paseos',
                 age: 68,
-                profilePic: 'https://placehold.co/100x100/00001a/eaccad?text=MR',
+                profilePic: 'https://placehold.co/100x100/f5f5f5/000000?text=MR',
                 tasksCompleted: 12,
                 tasksRequested: 10,
                 reviews: [
@@ -763,7 +818,7 @@
                 name: 'Laura Cortés',
                 username: 'laura_c',
                 age: 40,
-                profilePic: 'https://placehold.co/100x100/00001a/eaccad?text=L',
+                profilePic: 'https://placehold.co/100x100/f5f5f5/000000?text=L',
                 tasksCompleted: 1,
                 tasksRequested: 2,
                 reviews: []
@@ -825,23 +880,23 @@
             if (!profileContent) return;
 
             let html = `
-                <div class="flex flex-col items-center p-6 bg-brs-card rounded-xl border border-white/5 w-full shadow-lg mb-6 mt-2">
-                    <img src="${profileData.profilePic}" alt="Perfil" class="w-28 h-28 rounded-full object-cover border-4 border-brs-primary shadow-2xl mb-4">
-                    <h3 class="text-2xl font-bold text-brs-primary">${profileData.name}</h3>
-                    <p class="text-sm font-medium text-brs-text-sec">@${profileData.username}</p>
-                    <div class="flex items-center space-x-2 mt-2">
-                         <span class="bg-white/10 text-brs-primary text-xs px-3 py-1 rounded-full font-bold border border-white/10">${profileData.age} años</span>
-                         ${isMyProfile ? `<span class="badge-accepted text-xs px-3 py-1 rounded-full font-bold border border-green-900/30">${profileData.hoursGained}h Acumuladas</span>` : ''}
+                <div class="flex flex-col items-center p-6 bg-brs-card rounded-xl border-2 border-black w-full mb-6 mt-2">
+                    <img src="${profileData.profilePic}" alt="Perfil" class="w-28 h-28 rounded-full object-cover border-4 border-black mb-4">
+                    <h3 class="text-2xl font-black text-brs-text-main">${profileData.name}</h3>
+                    <p class="text-sm font-bold text-brs-text-sec">@${profileData.username}</p>
+                    <div class="flex items-center space-x-2 mt-3">
+                         <span class="bg-gray-100 text-black text-xs px-3 py-1 rounded-full font-black border border-black">${profileData.age} años</span>
+                         ${isMyProfile ? `<span class="bg-black text-white text-xs px-3 py-1 rounded-full font-black border border-black">${profileData.hoursGained}h Acumuladas</span>` : ''}
                     </div>
                     
                     ${isMyProfile ? `
-                        <button onclick="openEditModal()" class="mt-5 w-full border border-brs-primary text-brs-primary font-bold py-2 rounded-lg hover:bg-white/5 transition duration-200">
-                            Editar Perfil
+                        <button onclick="openEditModal()" class="mt-5 w-full bg-white border-2 border-black text-black font-black py-2 rounded-lg hover:bg-black hover:text-white transition duration-200">
+                            EDITAR PERFIL
                         </button>
                     ` : ''}
                 </div>
 
-                <div class="flex justify-around bg-brs-card w-full rounded-xl shadow-md border border-white/5 mb-4 overflow-hidden">
+                <div class="flex justify-around bg-brs-card w-full rounded-xl border-2 border-black mb-4 overflow-hidden">
                     <button class="profile-section-button ${currentProfileSection === 'reviews' ? 'active' : ''}" onclick="changeProfileSection('reviews')">
                         <div class="flex flex-col items-center">
                             <i data-lucide="message-square" class="w-5 h-5 mb-1"></i>
@@ -894,16 +949,16 @@
                         <div class="space-y-3">
                         ${profileData.reviews && profileData.reviews.length > 0 ?
                             profileData.reviews.map(review => `
-                                <div class="bg-brs-card p-4 rounded-xl border border-white/5 text-left shadow-sm">
+                                <div class="bg-brs-card p-4 rounded-xl border-2 border-black text-left">
                                     <div class="flex items-center justify-between mb-2">
-                                        <p class="font-bold text-brs-primary text-sm">@${review.reviewer}</p>
-                                        <div class="flex text-yellow-500">
+                                        <p class="font-black text-brs-text-main text-sm">@${review.reviewer}</p>
+                                        <div class="flex text-black">
                                             ${Array(review.rating).fill('<i data-lucide="star" class="w-3 h-3 fill-current"></i>').join('')}
                                         </div>
                                     </div>
-                                    <p class="text-sm text-brs-text-sec italic">"${review.text}"</p>
+                                    <p class="text-sm font-medium text-brs-text-sec italic">"${review.text}"</p>
                                 </div>
-                            `).join('') : `<div class="p-8 text-center text-brs-text-sec bg-brs-card rounded-xl border border-white/5">Sin reseñas aún.</div>`
+                            `).join('') : `<div class="p-8 text-center font-bold text-gray-500 bg-brs-card rounded-xl border-2 border-black">Sin reseñas aún.</div>`
                         }
                         </div>
                     `;
@@ -914,12 +969,12 @@
                             <div class="space-y-3">
                             ${myTasks.pending.length > 0 ?
                                 myTasks.pending.map(task => `
-                                    <div class="bg-brs-card p-4 rounded-xl border-l-4 border-brs-pending shadow-sm text-left">
-                                        <p class="font-bold text-brs-primary mb-1">${task.title}</p>
-                                        <p class="text-xs text-brs-text-sec mb-2 flex items-center"><i data-lucide="clock" class="w-3 h-3 mr-1"></i>${task.date}</p>
-                                        <p class="text-sm text-brs-text-sec">Ayudas a: <span class="font-bold text-brs-primary">${userDB[task.requesterId]?.name || task.requesterId}</span></p>
+                                    <div class="bg-brs-card p-4 rounded-xl border-l-8 border-y-2 border-r-2 border-black text-left">
+                                        <p class="font-black text-brs-text-main mb-1">${task.title}</p>
+                                        <p class="text-xs font-bold text-gray-600 mb-2 flex items-center"><i data-lucide="clock" class="w-3 h-3 mr-1"></i>${task.date}</p>
+                                        <p class="text-sm text-brs-text-sec">Ayudas a: <span class="font-black text-black">${userDB[task.requesterId]?.name || task.requesterId}</span></p>
                                     </div>
-                                `).join('') : `<div class="p-8 text-center text-brs-text-sec bg-brs-card rounded-xl border border-white/5">No tienes tareas pendientes.</div>`
+                                `).join('') : `<div class="p-8 text-center font-bold text-gray-500 bg-brs-card rounded-xl border-2 border-black">No tienes tareas pendientes.</div>`
                             }
                             </div>
                         `;
@@ -929,9 +984,9 @@
                     if (userId === currentUser.id) {
                         sectionHTML = `
                              <div class="flex justify-center space-x-2 mb-4 w-full pb-2">
-                                <button id="filter-all" onclick="filterRequestedTasks('all')" class="text-xs font-bold px-4 py-2 rounded-lg border border-brs-primary transition-all duration-200">Todas</button>
-                                <button id="filter-accepted" onclick="filterRequestedTasks('accepted')" class="text-xs font-bold px-4 py-2 rounded-lg border border-brs-primary transition-all duration-200">Aceptadas</button>
-                                <button id="filter-pending" onclick="filterRequestedTasks('pending')" class="text-xs font-bold px-4 py-2 rounded-lg border border-brs-primary transition-all duration-200">Pendientes</button>
+                                <button id="filter-all" onclick="filterRequestedTasks('all')" class="text-xs font-black px-4 py-2 rounded-lg border-2 border-black transition-all duration-200">TODAS</button>
+                                <button id="filter-accepted" onclick="filterRequestedTasks('accepted')" class="text-xs font-black px-4 py-2 rounded-lg border-2 border-black transition-all duration-200">ACEPTADAS</button>
+                                <button id="filter-pending" onclick="filterRequestedTasks('pending')" class="text-xs font-black px-4 py-2 rounded-lg border-2 border-black transition-all duration-200">PENDIENTES</button>
                             </div>
                             <div id="requested-tasks-list" class="w-full space-y-3">
                                 ${renderRequestedTasks('all')}
@@ -950,17 +1005,17 @@
                 if (filter === 'pending') return !task.accepted;
                 return true;
             });
-            if (list.length === 0) return `<div class="p-8 text-center text-brs-text-sec bg-brs-card rounded-xl border border-white/5">No hay tareas.</div>`;
+            if (list.length === 0) return `<div class="p-8 text-center font-bold text-gray-500 bg-brs-card rounded-xl border-2 border-black">No hay tareas.</div>`;
             return list.map(task => `
-                <div class="bg-brs-card p-4 rounded-xl border border-white/5 text-left shadow-sm">
+                <div class="bg-brs-card p-4 rounded-xl border-2 border-black text-left">
                     <div class="flex justify-between items-start mb-2">
-                        <p class="font-bold text-brs-primary">${task.title}</p>
+                        <p class="font-black text-brs-text-main">${task.title}</p>
                         <span class="text-[10px] font-black uppercase px-2 py-1 rounded-full ${task.accepted ? 'badge-accepted' : 'badge-pending'}">
                             ${task.accepted ? 'ACEPTADA' : 'ESPERA'}
                         </span>
                     </div>
-                    <p class="text-sm text-brs-text-sec mb-3">${task.description}</p>
-                    <div class="flex items-center justify-between text-xs text-brs-primary font-medium bg-white/5 p-2 rounded-lg">
+                    <p class="text-sm font-medium text-gray-600 mb-3">${task.description}</p>
+                    <div class="flex items-center justify-between text-xs text-black font-bold bg-gray-100 border border-black p-2 rounded-lg">
                         <span class="flex items-center"><i data-lucide="clock" class="w-3 h-3 mr-1"></i>${task.time.split(',')[0]}</span>
                         <span class="flex items-center"><i data-lucide="map-pin" class="w-3 h-3 mr-1"></i>${task.location.split(',')[0]}</span>
                     </div>
@@ -973,12 +1028,12 @@
             
             const btns = document.querySelectorAll('#profile-section-content button[id^="filter-"]');
             btns.forEach(btn => {
-                btn.className = 'text-xs font-bold px-4 py-2 rounded-lg border border-brs-primary text-brs-primary bg-transparent hover:bg-white/10 transition-all duration-200 opacity-70';
+                btn.className = 'text-xs font-black px-4 py-2 rounded-lg border-2 border-black bg-white text-black hover:bg-gray-100 transition-all duration-200';
             });
             
             const activeBtn = document.getElementById(`filter-${filter}`);
             if(activeBtn) {
-                 activeBtn.className = 'text-xs font-bold px-4 py-2 rounded-lg border border-brs-primary bg-brs-primary text-[#00001a] shadow-md transform scale-105 opacity-100';
+                 activeBtn.className = 'text-xs font-black px-4 py-2 rounded-lg border-2 border-black bg-black text-white transform scale-105';
             }
             lucide.createIcons();
         }
@@ -987,7 +1042,7 @@
             const taskTitle = (taskId.includes('manuel')) ? "Ayuda a Manuel" : "Acompañar a Maribel";
             currentUser.hoursGained += 2; 
             currentUser.tasksCompleted += 1; 
-            showMessageModal('¡Gracias por tu tiempo!', `Te has apuntado a: ${taskTitle}.`);
+            showMessageModal('¡GRACIAS POR TU TIEMPO!', `Te has apuntado a: ${taskTitle}.`);
         }
 
         function submitRequest() {
@@ -1005,17 +1060,17 @@
             // ---------------------------------------
 
             if (!title || !description || !time || !location) {
-                messageDiv.textContent = 'Faltan datos.';
-                messageDiv.classList.remove('hidden', 'text-brs-accepted');
-                messageDiv.classList.add('block', 'text-brs-pending');
+                messageDiv.textContent = 'FALTAN DATOS.';
+                messageDiv.classList.remove('hidden');
+                messageDiv.classList.add('block', 'text-black');
                 return;
             }
 
             myTasks.requested.unshift({ id: `req_${Date.now()}`, title, description, time, location, accepted: false, helperId: null });
             document.getElementById('new-request-form').reset();
-            messageDiv.textContent = '¡Publicado!';
-            messageDiv.classList.remove('hidden', 'text-brs-pending');
-            messageDiv.classList.add('block', 'text-brs-accepted');
+            messageDiv.textContent = '¡PUBLICADO!';
+            messageDiv.classList.remove('hidden');
+            messageDiv.classList.add('block', 'text-black');
             setTimeout(() => messageDiv.classList.add('hidden'), 3000);
         }
 
@@ -1035,7 +1090,7 @@
             userDB[currentUser.id] = { ...userDB[currentUser.id], ...currentUser };
             closeEditModal();
             renderProfile(currentUser.id);
-            showMessageModal('Guardado', 'Perfil actualizado.');
+            showMessageModal('GUARDADO', 'Perfil actualizado correctamente.');
         };
 
         function showMessageModal(title, body) {
@@ -1050,25 +1105,28 @@
         // LÓGICA MODO SUPER SIMPLE
         // ==============================================
         
-        let isSimpleMode = false;
         let taskToCancelId = null;
         let selectedSimpleDateOffset = null; // 0, 1, 2, 3
         let selectedSimpleTime = null; // "10:30", etc.
 
-        function toggleSimpleMode() {
-            isSimpleMode = !isSimpleMode;
-            const simpleInterface = document.getElementById('super-simple-interface');
-            const normalInterface = document.getElementById('normal-interface');
+        function showLanding() {
+            document.getElementById('landing-interface').style.display = 'flex';
+            document.getElementById('normal-interface').style.display = 'none';
+            document.getElementById('super-simple-interface').style.display = 'none';
+        }
 
-            if (isSimpleMode) {
-                normalInterface.style.display = 'none';
-                simpleInterface.style.display = 'flex';
-                showSimpleView('simple-home-view');
-            } else {
-                normalInterface.style.display = 'block';
-                simpleInterface.style.display = 'none';
-                showMenu('home-menu'); // Reset a home normal
-            }
+        function enterNormalMode() {
+            document.getElementById('landing-interface').style.display = 'none';
+            document.getElementById('normal-interface').style.display = 'block';
+            document.getElementById('super-simple-interface').style.display = 'none';
+            showMenu('home-menu');
+        }
+
+        function enterSimpleMode() {
+            document.getElementById('landing-interface').style.display = 'none';
+            document.getElementById('normal-interface').style.display = 'none';
+            document.getElementById('super-simple-interface').style.display = 'flex';
+            showSimpleView('simple-home-view');
         }
 
         function showSimpleView(viewId) {
@@ -1256,23 +1314,23 @@
         function renderSimpleList() {
             const container = document.getElementById('simple-tasks-container');
             if (myTasks.requested.length === 0) {
-                container.innerHTML = '<p class="text-center text-xl text-gray-500 mt-10">No tienes nada pendiente.</p>';
+                container.innerHTML = '<p class="text-center font-bold text-xl text-gray-500 mt-10">No tienes nada pendiente.</p>';
                 return;
             }
 
             container.innerHTML = myTasks.requested.map(task => `
                 <div class="simple-card relative">
                     <div class="flex justify-between items-start mb-4">
-                        <span class="text-xs font-bold px-3 py-1 rounded-full ${task.accepted ? 'bg-green-900 text-green-300' : 'bg-yellow-900 text-yellow-300'} border ${task.accepted ? 'border-green-500' : 'border-yellow-500'} uppercase tracking-wider">
+                        <span class="text-xs font-black px-3 py-1 rounded-full ${task.accepted ? 'bg-black text-white' : 'bg-white text-black border-dashed'} border-2 border-black uppercase tracking-widest">
                             ${task.accepted ? 'ACEPTADA (Vienen a ayudar)' : 'EN ESPERA (Buscando ayuda)'}
                         </span>
                     </div>
-                    <p class="text-2xl font-bold text-white mb-2">"${task.description}"</p>
-                    <p class="text-lg text-brs-primary mb-6 flex items-center">
-                        <i data-lucide="clock" class="w-6 h-6 mr-2"></i> ${task.time}
+                    <p class="text-2xl font-black text-black mb-2">"${task.description}"</p>
+                    <p class="text-lg font-bold text-gray-600 mb-6 flex items-center">
+                        <i data-lucide="clock" class="w-6 h-6 mr-2 text-black"></i> ${task.time}
                     </p>
                     
-                    <button onclick="promptCancelSimple('${task.id}')" class="w-full bg-red-900/50 border-2 border-red-500 text-red-300 font-bold py-4 rounded-xl text-xl hover:bg-red-900 transition flex items-center justify-center">
+                    <button onclick="promptCancelSimple('${task.id}')" class="w-full bg-white hover:bg-black border-4 border-black text-black hover:text-white font-black py-4 rounded-xl text-xl transition flex items-center justify-center">
                         <i data-lucide="x-circle" class="w-6 h-6 mr-2"></i> YA NO LO NECESITO
                     </button>
                 </div>
@@ -1364,8 +1422,8 @@
             // Dealer logic: Hide first card if game active
             if (bjGameActive) {
                 dealerDiv.innerHTML = `
-                    <div class="bj-card bg-blue-800 border-2 border-white flex items-center justify-center">
-                        <span class="text-4xl">?</span>
+                    <div class="bj-card bg-black border-2 border-white flex items-center justify-center">
+                        <span class="text-4xl text-white">?</span>
                     </div>
                     ${renderCard(bjDealerHand[1])}
                 `;
@@ -1447,7 +1505,7 @@
 
         // Inicialización
         window.onload = function() {
-            showMenu('home-menu');
+            showLanding(); // Iniciar en la pantalla de selección
             document.querySelectorAll('.post-profile-pic').forEach(img => {
                 img.addEventListener('click', function() { showMenu('profile-menu', this.getAttribute('data-user-id')); });
             });
