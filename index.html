@@ -783,6 +783,7 @@
             profilePic: 'https://placehold.co/100x100/f5f5f5/000000?text=E',
             hoursGained: 4,
             tasksCompleted: 2,
+            credits: 45, // Nueva propiedad de créditos
         };
 
         const userDB = {
@@ -893,6 +894,45 @@
                         <button onclick="openEditModal()" class="mt-5 w-full bg-white border-2 border-black text-black font-black py-2 rounded-lg hover:bg-black hover:text-white transition duration-200">
                             EDITAR PERFIL
                         </button>
+
+                        <button onclick="toggleCreditsSection()" class="mt-3 w-full bg-black text-white border-2 border-black font-black py-2 rounded-lg hover:bg-gray-800 transition duration-200 flex items-center justify-center active:scale-95 shadow-[4px_4px_0px_rgba(150,150,150,1)]">
+                            <i data-lucide="star" class="w-5 h-5 mr-2 text-white"></i> MIS CRÉDITOS
+                        </button>
+
+                        <!-- Nueva Sección de Créditos y Ofertas (Oculta por defecto) -->
+                        <div id="credits-section" class="w-full mt-6 hidden flex-col">
+                            <div class="w-full bg-white text-black border-2 border-black font-black py-3 rounded-lg flex items-center justify-center shadow-[4px_4px_0px_rgba(0,0,0,1)] cursor-default">
+                                HAS OBTENIDO ${profileData.credits} CRÉDITOS
+                            </div>
+                            
+                            <div class="mt-8 text-left w-full">
+                                <h4 class="text-sm font-black text-gray-500 mb-3 uppercase tracking-wider">Ofertas canjeables</h4>
+                                
+                                <div class="space-y-3">
+                                    <!-- Oferta 1 -->
+                                    <div class="border-2 border-black rounded-xl p-3 flex justify-between items-center bg-white shadow-[4px_4px_0px_rgba(0,0,0,1)]">
+                                        <div>
+                                            <p class="font-black text-sm">10% dto. Bar Antonio</p>
+                                            <p class="text-xs font-bold text-gray-600">Coste: 25 créditos</p>
+                                        </div>
+                                        <button onclick="showMessageModal('OFERTA CANJEADA', 'Has canjeado 10% de descuento en el Bar Antonio.')" class="bg-white border-2 border-black text-black text-xs font-black px-3 py-2 rounded hover:bg-black hover:text-white transition active:scale-95">
+                                            CANJEAR
+                                        </button>
+                                    </div>
+                                    
+                                    <!-- Oferta 2 -->
+                                    <div class="border-2 border-black rounded-xl p-3 flex justify-between items-center bg-white shadow-[4px_4px_0px_rgba(0,0,0,1)]">
+                                        <div>
+                                            <p class="font-black text-sm">Café y tostada Loli</p>
+                                            <p class="text-xs font-bold text-gray-600">Coste: 15 créditos</p>
+                                        </div>
+                                        <button onclick="showMessageModal('OFERTA CANJEADA', 'Has canjeado un café y tostada gratis en Panadería Loli.')" class="bg-white border-2 border-black text-black text-xs font-black px-3 py-2 rounded hover:bg-black hover:text-white transition active:scale-95">
+                                            CANJEAR
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     ` : ''}
                 </div>
 
@@ -1082,6 +1122,19 @@
         }
         function closeEditModal() { document.getElementById('edit-profile-modal').style.display = 'none'; }
         
+        function toggleCreditsSection() {
+            const section = document.getElementById('credits-section');
+            if (section) {
+                if (section.classList.contains('hidden')) {
+                    section.classList.remove('hidden');
+                    section.classList.add('flex');
+                } else {
+                    section.classList.add('hidden');
+                    section.classList.remove('flex');
+                }
+            }
+        }
+
         document.getElementById('edit-profile-form').onsubmit = function(e) {
             e.preventDefault();
             currentUser.name = document.getElementById('edit-name').value.trim();
